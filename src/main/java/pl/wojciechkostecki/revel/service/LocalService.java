@@ -15,6 +15,10 @@ public class LocalService {
         this.localRepository = localRepository;
     }
 
+    public Local save(Local local) {
+        return localRepository.save(local);
+    }
+
     public List<Local> getAll() {
         return localRepository.findAll();
     }
@@ -22,5 +26,16 @@ public class LocalService {
     public Local findById(Long id) {
         return localRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Couldn't find a local with id: %s", id)));
+    }
+
+    public Local updateLocal(Long id, Local local) {
+        if(!id.equals(local.getId())){
+            throw new IllegalArgumentException(String.format("Path id %s not matching body id %s", id, local.getId()));
+        }
+        return save(local);
+    }
+
+    public void delete(Long id) {
+        localRepository.deleteById(id);
     }
 }

@@ -2,11 +2,9 @@ package pl.wojciechkostecki.revel.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.wojciechkostecki.revel.model.Local;
 import pl.wojciechkostecki.revel.service.LocalService;
 
@@ -22,6 +20,13 @@ public class LocalController {
         this.localService = localService;
     }
 
+    @PostMapping
+    public ResponseEntity<Local> createLocal(@RequestBody Local local) {
+        logger.debug("REST request to create Local: {}",local);
+        Local savedLocal = localService.save(local);
+        return new ResponseEntity<>(savedLocal, HttpStatus.CREATED);
+    }
+
     @GetMapping
     public ResponseEntity<List<Local>> getAllLocals(){
         logger.debug("REST request to get all Locals");
@@ -32,5 +37,18 @@ public class LocalController {
     public ResponseEntity<Local> getLocals(@PathVariable Long id){
         logger.debug("REST request to get Local: {}",id);
         return ResponseEntity.ok(localService.findById(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Local> updateLocal(@PathVariable Long id, @RequestBody Local local){
+        logger.debug("REST request to update Local: {} with id {}",local,id);
+        return ResponseEntity.ok(localService.updateLocal(id,local));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteLocal(@PathVariable Long id){
+        logger.debug("REST request to delete Local: {}",id);
+        localService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
