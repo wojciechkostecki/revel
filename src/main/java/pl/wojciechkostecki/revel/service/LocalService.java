@@ -28,6 +28,10 @@ public class LocalService {
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Couldn't find a local with id: %s", id)));
     }
 
+    public List<Local> findByName(String name) {
+        return localRepository.findByName(name);
+    }
+
     public Local updateLocal(Long id, Local local) {
         if(!id.equals(local.getId())){
             throw new IllegalArgumentException(String.format("Path id %s not matching body id %s", id, local.getId()));
