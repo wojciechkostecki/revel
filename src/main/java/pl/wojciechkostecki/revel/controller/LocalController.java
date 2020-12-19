@@ -11,7 +11,7 @@ import pl.wojciechkostecki.revel.service.LocalService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/app/locals")
+@RequestMapping("/api/locals")
 public class LocalController {
     private final Logger logger = LoggerFactory.getLogger(LocalController.class);
     private final LocalService localService;
@@ -34,13 +34,13 @@ public class LocalController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Local> getLocals(@PathVariable Long id){
+    public ResponseEntity<Local> getLocal(@PathVariable Long id){
         logger.debug("REST request to get Local: {}",id);
         return ResponseEntity.ok(localService.findById(id));
     }
 
-    @GetMapping("/{name}")
-    public ResponseEntity<List<Local>> getLocalsByName(@PathVariable String name){
+    @GetMapping("/search")
+    public ResponseEntity<List<Local>> getLocalsByName(@RequestParam String name){
         logger.debug("REST request to get Local: {}",name);
         return ResponseEntity.ok(localService.findByName(name));
     }

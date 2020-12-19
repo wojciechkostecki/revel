@@ -29,12 +29,12 @@ public class LocalService {
     }
 
     public List<Local> findByName(String name) {
-        return localRepository.findByName(name);
+        return localRepository.findByNameContainingIgnoreCase(name);
     }
 
     public Local updateLocal(Long id, Local local) {
-        if(!id.equals(local.getId())){
-            throw new IllegalArgumentException(String.format("Path id %s not matching body id %s", id, local.getId()));
+        if(id == null){
+            throw new NullPointerException(String.format("No local with the given id %s", id));
         }
         return save(local);
     }
