@@ -25,7 +25,7 @@ public class LocalService {
 
     public Local findById(Long id) {
         return localRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("Couldn't find a local with id: %s", id)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Couldn't find a local with id: %d", id)));
     }
 
     public List<Local> findByName(String name) {
@@ -33,10 +33,11 @@ public class LocalService {
     }
 
     public Local updateLocal(Long id, Local local) {
-        if(id == null){
-            throw new NullPointerException(String.format("No local with the given id %s", id));
+        if (local.getId().equals(id)) {
+            return save(local);
+        } else {
+            throw new IllegalArgumentException(String.format("The given id %d doesn't match the id %d of the local", id, local.getId()));
         }
-        return save(local);
     }
 
     public void delete(Long id) {
