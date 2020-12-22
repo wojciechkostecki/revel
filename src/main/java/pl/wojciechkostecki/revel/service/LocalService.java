@@ -33,11 +33,12 @@ public class LocalService {
     }
 
     public Local updateLocal(Long id, Local local) {
-        if (local.getId().equals(id)) {
-            return save(local);
-        } else {
-            throw new IllegalArgumentException(String.format("The given id %d doesn't match the id %d of the local", id, local.getId()));
-        }
+        Local modifiedLocal = localRepository.getOne(id);
+        modifiedLocal.setName(local.getName());
+        modifiedLocal.setOpeningTime(local.getOpeningTime());
+        modifiedLocal.setClosingTime(local.getClosingTime());
+        modifiedLocal.setMenu(local.getMenu());
+        return save(modifiedLocal);
     }
 
     public void delete(Long id) {

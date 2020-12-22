@@ -41,7 +41,7 @@ public class LocalController {
 
     @GetMapping("/search")
     public ResponseEntity<List<Local>> getLocalsByName(@RequestParam(required = false) String name){
-        logger.debug("REST request to get Locals with: {} in name",name);
+        logger.debug("REST request to get Locals with name containing {}",name);
         return ResponseEntity.ok(localService.findByName(name));
     }
 
