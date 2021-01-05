@@ -30,7 +30,7 @@ public class MenuItemService {
         MenuItem modifiedMenuItem = menuItemRepository.getOne(id);
         modifiedMenuItem.setCategory(menuItem.getCategory());
         modifiedMenuItem.setName(menuItem.getName());
-        modifiedMenuItem.setIngredients(menuItem.getIngredients());
+        modifiedMenuItem.setDescription(menuItem.getDescription());
         modifiedMenuItem.setPrice(menuItem.getPrice());
         return save(modifiedMenuItem);
     }
