@@ -2,12 +2,12 @@ package pl.wojciechkostecki.revel.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import pl.wojciechkostecki.revel.model.MenuItem;
+import pl.wojciechkostecki.revel.model.Menu;
 
 import java.util.List;
 
 @Repository
-public interface MenuItemRepository extends JpaRepository<MenuItem,Long> {
+public interface MenuRepository extends JpaRepository<Menu,Long> {
 
-    List<MenuItem> findByNameContainingIgnoreCase(String name);
+    List<Menu> findByNameContainingIgnoreCase(String name);
 }
