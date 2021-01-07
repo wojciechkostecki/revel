@@ -16,6 +16,6 @@ public class Menu {
 
     private String name;
 
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<MenuItem> menuItems = new HashSet<>();
 }

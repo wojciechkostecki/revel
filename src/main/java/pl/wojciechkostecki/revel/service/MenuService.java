@@ -22,10 +22,6 @@ public class MenuService {
         return menuRepository.findAll();
     }
 
-    public List<Menu> findByName(String name){
-        return menuRepository.findByNameContainingIgnoreCase(name);
-    }
-
     public Menu updateMenu(Long id, Menu menu){
         Menu modifiedMenu = menuRepository.getOne(id);
         modifiedMenu.setName(menu.getName());

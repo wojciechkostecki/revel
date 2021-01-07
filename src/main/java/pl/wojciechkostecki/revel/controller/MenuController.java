@@ -34,12 +34,6 @@ public class MenuController {
         return ResponseEntity.ok(menuService.getAll());
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<Menu>> getMenuByName(@RequestParam String name) {
-        logger.debug("REST request to get Menu with name containing {}", name);
-        return ResponseEntity.ok(menuService.findByName(name));
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<Menu> updateMenu(@PathVariable Long id, @RequestBody Menu menu) {
         logger.debug("REST request to update Menu: {} with id {}", menu, id);
