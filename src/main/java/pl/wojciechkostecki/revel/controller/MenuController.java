@@ -11,7 +11,7 @@ import pl.wojciechkostecki.revel.service.MenuService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/menu")
+@RequestMapping("/api/locals/menu")
 public class MenuController {
     private final Logger logger = LoggerFactory.getLogger(MenuController.class);
     private final MenuService menuService;

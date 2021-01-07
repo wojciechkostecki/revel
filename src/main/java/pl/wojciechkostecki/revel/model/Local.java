@@ -2,17 +2,17 @@ package pl.wojciechkostecki.revel.model;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalTime;
 
 @Entity
+@Table(name = "locals")
 @Data
 public class Local {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private Long id;
 
     private String name;
@@ -21,5 +21,7 @@ public class Local {
 
     private LocalTime closingTime;
 
-    private String menu;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "menu_id", referencedColumnName = "id")
+    private Menu menu;
 }
