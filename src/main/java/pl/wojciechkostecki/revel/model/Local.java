@@ -6,7 +6,6 @@ import javax.persistence.*;
 import java.time.LocalTime;
 
 @Entity
-@Table(name = "locals")
 @Data
 public class Local {
 
