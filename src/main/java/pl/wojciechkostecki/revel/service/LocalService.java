@@ -12,12 +12,12 @@ import java.util.List;
 @Service
 public class LocalService {
     private final LocalRepository localRepository;
-    private final LocalMapper localMapper;
+    private LocalMapper localMapper;
 
-    public LocalService(LocalRepository localRepository, LocalMapper localMapper) {
+    public LocalService(LocalRepository localRepository) {
         this.localRepository = localRepository;
-        this.localMapper = localMapper;
     }
+
 
     public Local save(LocalDTO localDTO) {
         Local local = localMapper.toLocal(localDTO);
