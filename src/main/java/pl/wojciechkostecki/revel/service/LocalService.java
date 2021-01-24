@@ -1,7 +1,9 @@
 package pl.wojciechkostecki.revel.service;
 
 import org.springframework.stereotype.Service;
+import pl.wojciechkostecki.revel.mapper.LocalMapper;
 import pl.wojciechkostecki.revel.model.Local;
+import pl.wojciechkostecki.revel.model.dto.LocalDTO;
 import pl.wojciechkostecki.revel.repository.LocalRepository;
 
 import javax.persistence.EntityNotFoundException;
@@ -10,12 +12,15 @@ import java.util.List;
 @Service
 public class LocalService {
     private final LocalRepository localRepository;
+    private final LocalMapper localMapper;
 
-    public LocalService(LocalRepository localRepository) {
+    public LocalService(LocalRepository localRepository, LocalMapper localMapper) {
         this.localRepository = localRepository;
+        this.localMapper = localMapper;
     }
 
-    public Local save(Local local) {
+    public Local save(LocalDTO localDTO) {
+        Local local = localMapper.toLocal(localDTO);
         return localRepository.save(local);
     }
 
@@ -32,13 +37,14 @@ public class LocalService {
         return localRepository.findByNameContainingIgnoreCase(name);
     }
 
-    public Local updateLocal(Long id, Local local) {
+    public Local updateLocal(Long id, LocalDTO localDTO) {
         Local modifiedLocal = localRepository.getOne(id);
-        modifiedLocal.setName(local.getName());
-        modifiedLocal.setOpeningTime(local.getOpeningTime());
-        modifiedLocal.setClosingTime(local.getClosingTime());
-        modifiedLocal.setMenu(local.getMenu());
-        return save(modifiedLocal);
+        LocalDTO modifiedLocalDTO = localMapper.toLocalDTO(modifiedLocal);
+        modifiedLocalDTO.setName(localDTO.getName());
+        modifiedLocalDTO.setOpeningTime(localDTO.getOpeningTime());
+        modifiedLocalDTO.setClosingTime(localDTO.getClosingTime());
+        modifiedLocalDTO.setMenu(localDTO.getMenu());
+        return save(modifiedLocalDTO);
     }
 
     public void delete(Long id) {

@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.wojciechkostecki.revel.model.Local;
+import pl.wojciechkostecki.revel.model.dto.LocalDTO;
 import pl.wojciechkostecki.revel.service.LocalService;
 
 import java.util.List;
@@ -21,9 +22,9 @@ public class LocalController {
     }
 
     @PostMapping
-    public ResponseEntity<Local> createLocal(@RequestBody Local local) {
-        logger.debug("REST request to create Local: {}",local);
-        Local savedLocal = localService.save(local);
+    public ResponseEntity<Local> createLocal(@RequestBody LocalDTO localDTO) {
+        logger.debug("REST request to create Local: {}",localDTO);
+        Local savedLocal = localService.save(localDTO);
         return new ResponseEntity<>(savedLocal, HttpStatus.CREATED);
     }
 
@@ -46,9 +47,9 @@ public class LocalController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Local> updateLocal(@PathVariable Long id, @RequestBody Local local){
-        logger.debug("REST request to update Local: {} with id {}",local,id);
-        return ResponseEntity.ok(localService.updateLocal(id,local));
+    public ResponseEntity<Local> updateLocal(@PathVariable Long id, @RequestBody LocalDTO localDTO){
+        logger.debug("REST request to update Local: {} with id {}",localDTO,id);
+        return ResponseEntity.ok(localService.updateLocal(id,localDTO));
     }
 
     @DeleteMapping("/{id}")
