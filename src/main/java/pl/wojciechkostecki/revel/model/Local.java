@@ -21,6 +21,5 @@ public class Local {
     private LocalTime closingTime;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "menu_id", referencedColumnName = "id")
     private Menu menu;
 }

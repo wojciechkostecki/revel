@@ -7,10 +7,11 @@ import pl.wojciechkostecki.revel.model.dto.LocalDTO;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
-public interface LocalMapper {
-    LocalDTO toLocalDTO(Local local);
+public interface LocalMapper extends EntityMapper<LocalDTO,Local> {
 
-    List<LocalDTO> toLocalsDTOs(List<Local> locals);
+    //LocalDTO toLocalDTO(Local local);
 
-    Local toLocal(LocalDTO localDTO);
+    //List<LocalDTO> toLocalsDTOs(List<Local> locals);
+
+    //Local toLocal(LocalDTO localDTO);
 }

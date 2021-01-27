@@ -23,7 +23,7 @@ public class LocalService {
 
 
     public Local save(LocalDTO localDTO) {
-        Local local = localMapper.toLocal(localDTO);
+        Local local = localMapper.toEntity(localDTO);
         return localRepository.save(local);
     }
 
@@ -42,7 +42,7 @@ public class LocalService {
 
     public Local updateLocal(Long id, LocalDTO localDTO) {
         Local modifiedLocal = localRepository.getOne(id);
-        LocalDTO modifiedLocalDTO = localMapper.toLocalDTO(modifiedLocal);
+        LocalDTO modifiedLocalDTO = localMapper.toDto(modifiedLocal);
         modifiedLocalDTO.setName(localDTO.getName());
         modifiedLocalDTO.setOpeningTime(localDTO.getOpeningTime());
         modifiedLocalDTO.setClosingTime(localDTO.getClosingTime());
