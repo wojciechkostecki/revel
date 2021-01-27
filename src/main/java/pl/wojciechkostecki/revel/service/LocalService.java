@@ -7,9 +7,11 @@ import pl.wojciechkostecki.revel.model.dto.LocalDTO;
 import pl.wojciechkostecki.revel.repository.LocalRepository;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 public class LocalService {
     private final LocalRepository localRepository;
     private LocalMapper localMapper;

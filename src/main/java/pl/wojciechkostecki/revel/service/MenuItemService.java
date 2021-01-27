@@ -4,9 +4,11 @@ import org.springframework.stereotype.Service;
 import pl.wojciechkostecki.revel.model.MenuItem;
 import pl.wojciechkostecki.revel.repository.MenuItemRepository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 public class MenuItemService {
     private final MenuItemRepository menuItemRepository;
 
