@@ -16,8 +16,9 @@ public class LocalService {
     private final LocalRepository localRepository;
     private LocalMapper localMapper;
 
-    public LocalService(LocalRepository localRepository) {
+    public LocalService(LocalRepository localRepository, LocalMapper localMapper) {
         this.localRepository = localRepository;
+        this.localMapper = localMapper;
     }
 
 
