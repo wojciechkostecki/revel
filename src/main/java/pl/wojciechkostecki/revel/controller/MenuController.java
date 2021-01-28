@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.wojciechkostecki.revel.model.Menu;
+import pl.wojciechkostecki.revel.model.dto.MenuDTO;
 import pl.wojciechkostecki.revel.service.MenuService;
 
 import java.util.List;
@@ -22,9 +23,9 @@ public class MenuController {
 
 
     @PostMapping
-    public ResponseEntity<Menu> createMenu(@RequestBody Menu menu) {
-        logger.debug("REST request to create Menu: {}", menu);
-        Menu savedMenu = menuService.save(menu);
+    public ResponseEntity<Menu> createMenu(@RequestBody MenuDTO menuDTO) {
+        logger.debug("REST request to create Menu: {}", menuDTO);
+        Menu savedMenu = menuService.save(menuDTO);
         return new ResponseEntity<>(savedMenu, HttpStatus.CREATED);
     }
 
@@ -35,9 +36,9 @@ public class MenuController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Menu> updateMenu(@PathVariable Long id, @RequestBody Menu menu) {
-        logger.debug("REST request to update Menu: {} with id {}", menu, id);
-        return ResponseEntity.ok(menuService.updateMenu(id, menu));
+    public ResponseEntity<Menu> updateMenu(@PathVariable Long id, @RequestBody MenuDTO menuDTO) {
+        logger.debug("REST request to update Menu: {} with id {}", menuDTO, id);
+        return ResponseEntity.ok(menuService.updateMenu(id, menuDTO));
     }
 
     @DeleteMapping("/{id}")

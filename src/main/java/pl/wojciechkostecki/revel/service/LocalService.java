@@ -14,7 +14,7 @@ import java.util.List;
 @Transactional
 public class LocalService {
     private final LocalRepository localRepository;
-    private LocalMapper localMapper;
+    private final LocalMapper localMapper;
 
     public LocalService(LocalRepository localRepository, LocalMapper localMapper) {
         this.localRepository = localRepository;
