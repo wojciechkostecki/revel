@@ -43,7 +43,7 @@ public class MenuController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMenu(@PathVariable Long id) {
-        logger.debug("REST request to delete Menu", id);
+        logger.debug("REST request to delete Menu: {}", id);
         menuService.delete(id);
         return ResponseEntity.noContent().build();
     }
