@@ -23,38 +23,38 @@ public class LocalController {
 
     @PostMapping
     public ResponseEntity<Local> createLocal(@RequestBody LocalDTO localDTO) {
-        logger.debug("REST request to create Local: {}",localDTO);
+        logger.debug("REST request to create Local: {}", localDTO);
         Local savedLocal = localService.save(localDTO);
         return new ResponseEntity<>(savedLocal, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<Local>> getAllLocals(){
+    public ResponseEntity<List<Local>> getAllLocals() {
         logger.debug("REST request to get all Locals");
         return ResponseEntity.ok(localService.getAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Local> getLocal(@PathVariable Long id){
-        logger.debug("REST request to get Local: {}",id);
+    public ResponseEntity<Local> getLocal(@PathVariable Long id) {
+        logger.debug("REST request to get Local: {}", id);
         return ResponseEntity.ok(localService.findById(id));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Local>> getLocalsByName(@RequestParam String name){
-        logger.debug("REST request to get Locals with name containing {}",name);
+    public ResponseEntity<List<Local>> getLocalsByName(@RequestParam String name) {
+        logger.debug("REST request to get Locals with name containing {}", name);
         return ResponseEntity.ok(localService.findByName(name));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Local> updateLocal(@PathVariable Long id, @RequestBody LocalDTO localDTO){
-        logger.debug("REST request to update Local: {} with id {}",localDTO,id);
-        return ResponseEntity.ok(localService.updateLocal(id,localDTO));
+    public ResponseEntity<Local> updateLocal(@PathVariable Long id, @RequestBody LocalDTO localDTO) {
+        logger.debug("REST request to update Local: {} with id {}", localDTO, id);
+        return ResponseEntity.ok(localService.updateLocal(id, localDTO));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLocal(@PathVariable Long id){
-        logger.debug("REST request to delete Local: {}",id);
+    public ResponseEntity<Void> deleteLocal(@PathVariable Long id) {
+        logger.debug("REST request to delete Local: {}", id);
         localService.delete(id);
         return ResponseEntity.noContent().build();
     }

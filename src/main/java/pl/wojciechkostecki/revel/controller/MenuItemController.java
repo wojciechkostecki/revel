@@ -29,19 +29,19 @@ public class MenuItemController {
     }
 
     @GetMapping
-    public ResponseEntity<List<MenuItem>> getAllMenuItems(){
+    public ResponseEntity<List<MenuItem>> getAllMenuItems() {
         logger.debug("REST request to get all Menu Items");
         return ResponseEntity.ok(menuItemService.getAll());
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<MenuItem>> getMenuItemsByName (@RequestParam String name){
+    public ResponseEntity<List<MenuItem>> getMenuItemsByName(@RequestParam String name) {
         logger.debug("REST request to get Menu Items with name containing {}", name);
         return ResponseEntity.ok(menuItemService.findByName(name));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MenuItem> updateMenuItem(@PathVariable Long id, @RequestBody MenuItem menuItem){
+    public ResponseEntity<MenuItem> updateMenuItem(@PathVariable Long id, @RequestBody MenuItem menuItem) {
         logger.debug("REST request to update Menu Item: {} with id {}", menuItem, id);
         return ResponseEntity.ok(menuItemService.updateMenuItem(id, menuItem));
     }

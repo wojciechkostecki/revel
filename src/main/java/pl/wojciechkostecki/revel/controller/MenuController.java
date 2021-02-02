@@ -22,10 +22,10 @@ public class MenuController {
     }
 
 
-    @PostMapping
-    public ResponseEntity<Menu> createMenu(@RequestBody MenuDTO menuDTO) {
+    @PostMapping("/{localId}")
+    public ResponseEntity<Menu> createMenu(@PathVariable final Long localId, @RequestBody MenuDTO menuDTO) {
         logger.debug("REST request to create Menu: {}", menuDTO);
-        Menu savedMenu = menuService.save(menuDTO);
+        Menu savedMenu = menuService.save(localId, menuDTO);
         return new ResponseEntity<>(savedMenu, HttpStatus.CREATED);
     }
 
