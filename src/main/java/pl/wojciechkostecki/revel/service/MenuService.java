@@ -26,11 +26,11 @@ public class MenuService {
         this.menuMapper = menuMapper;
     }
 
-    public Menu save(Long localId, MenuDTO menuDTO) {
+    public Menu save(MenuDTO menuDTO) {
         Menu menu = menuMapper.toEntity(menuDTO);
-        Local local = localService.findById(localId);
+        Local local = localService.findById(menuDTO.getLocalId());
         if (Objects.nonNull(local.getMenu())) {
-            throw new MenuIsAlreadyAssignedException(local.getMenu().getId(), localId);
+            throw new MenuIsAlreadyAssignedException(local.getMenu().getId(), menuDTO.getLocalId());
         }
         menu.setLocal(local);
         local.setMenu(menu);

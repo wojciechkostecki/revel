@@ -15,5 +15,7 @@ public class MenuDTO {
 
     private Local local;
 
+    private Long localId;
+
     private Set<MenuItem> menuItems = new HashSet<>();
 }
