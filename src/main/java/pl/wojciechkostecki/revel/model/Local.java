@@ -1,5 +1,7 @@
 package pl.wojciechkostecki.revel.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -21,5 +23,6 @@ public class Local {
     private LocalTime closingTime;
 
     @OneToOne(cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Menu menu;
 }

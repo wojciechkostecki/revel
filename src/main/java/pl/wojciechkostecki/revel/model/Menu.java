@@ -1,5 +1,7 @@
 package pl.wojciechkostecki.revel.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -18,6 +20,7 @@ public class Menu {
     private String name;
 
     @OneToOne(mappedBy = "menu")
+    @JsonBackReference
     private Local local;
 
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
