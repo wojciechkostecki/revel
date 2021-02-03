@@ -5,6 +5,7 @@ import pl.wojciechkostecki.revel.exception.MenuIsAlreadyAssignedException;
 import pl.wojciechkostecki.revel.mapper.MenuMapper;
 import pl.wojciechkostecki.revel.model.Local;
 import pl.wojciechkostecki.revel.model.Menu;
+import pl.wojciechkostecki.revel.model.MenuItem;
 import pl.wojciechkostecki.revel.model.dto.MenuDTO;
 import pl.wojciechkostecki.revel.repository.MenuRepository;
 

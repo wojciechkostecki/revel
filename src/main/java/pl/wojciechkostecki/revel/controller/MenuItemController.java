@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.wojciechkostecki.revel.model.MenuItem;
+import pl.wojciechkostecki.revel.model.dto.MenuItemDTO;
 import pl.wojciechkostecki.revel.service.MenuItemService;
 
 import java.util.List;
@@ -22,9 +23,9 @@ public class MenuItemController {
     }
 
     @PostMapping
-    public ResponseEntity<MenuItem> createMenuItem(@RequestBody MenuItem menuItem) {
-        logger.debug("REST request to create Menu Item: {}", menuItem);
-        MenuItem savedMenuItem = menuItemService.save(menuItem);
+    public ResponseEntity<MenuItem> createMenuItem(@RequestBody MenuItemDTO menuItemDTO) {
+        logger.debug("REST request to create Menu Item: {}", menuItemDTO);
+        MenuItem savedMenuItem = menuItemService.save(menuItemDTO);
         return new ResponseEntity<>(savedMenuItem, HttpStatus.CREATED);
     }
 
@@ -41,9 +42,9 @@ public class MenuItemController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MenuItem> updateMenuItem(@PathVariable Long id, @RequestBody MenuItem menuItem) {
-        logger.debug("REST request to update Menu Item: {} with id {}", menuItem, id);
-        return ResponseEntity.ok(menuItemService.updateMenuItem(id, menuItem));
+    public ResponseEntity<MenuItem> updateMenuItem(@PathVariable Long id, @RequestBody MenuItemDTO menuItemDTO) {
+        logger.debug("REST request to update Menu Item: {} with id {}", menuItemDTO, id);
+        return ResponseEntity.ok(menuItemService.updateMenuItem(id, menuItemDTO));
     }
 
     @DeleteMapping("/{id}")
