@@ -5,7 +5,6 @@ import pl.wojciechkostecki.revel.model.Category;
 
 @Data
 public class MenuItemDTO {
-    private Long id;
 
     private String name;
 

@@ -7,7 +7,6 @@ import java.time.LocalTime;
 
 @Data
 public class LocalDTO {
-    private Long id;
 
     private String name;
 

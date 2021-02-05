@@ -9,11 +9,8 @@ import java.util.Set;
 
 @Data
 public class MenuDTO {
-    private Long id;
 
     private String name;
-
-    private Local local;
 
     private Long localId;
 
