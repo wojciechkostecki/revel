@@ -9,6 +9,7 @@ import pl.wojciechkostecki.revel.model.Menu;
 import pl.wojciechkostecki.revel.model.dto.MenuDTO;
 import pl.wojciechkostecki.revel.service.MenuService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -23,7 +24,7 @@ public class MenuController {
 
 
     @PostMapping
-    public ResponseEntity<Menu> createMenu(@RequestBody MenuDTO menuDTO) {
+    public ResponseEntity<Menu> createMenu(@Valid @RequestBody MenuDTO menuDTO) {
         logger.debug("REST request to create Menu: {}", menuDTO);
         Menu savedMenu = menuService.save(menuDTO);
         return new ResponseEntity<>(savedMenu, HttpStatus.CREATED);
@@ -36,7 +37,7 @@ public class MenuController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Menu> updateMenu(@PathVariable Long id, @RequestBody MenuDTO menuDTO) {
+    public ResponseEntity<Menu> updateMenu(@PathVariable Long id, @Valid @RequestBody MenuDTO menuDTO) {
         logger.debug("REST request to update Menu: {} with id {}", menuDTO, id);
         return ResponseEntity.ok(menuService.updateMenu(id, menuDTO));
     }

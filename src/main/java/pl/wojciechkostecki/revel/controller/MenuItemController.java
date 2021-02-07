@@ -10,6 +10,7 @@ import pl.wojciechkostecki.revel.model.MenuItem;
 import pl.wojciechkostecki.revel.model.dto.MenuItemDTO;
 import pl.wojciechkostecki.revel.service.MenuItemService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -23,7 +24,7 @@ public class MenuItemController {
     }
 
     @PostMapping
-    public ResponseEntity<MenuItem> createMenuItem(@RequestBody MenuItemDTO menuItemDTO) {
+    public ResponseEntity<MenuItem> createMenuItem(@Valid @RequestBody MenuItemDTO menuItemDTO) {
         logger.debug("REST request to create Menu Item: {}", menuItemDTO);
         MenuItem savedMenuItem = menuItemService.save(menuItemDTO);
         return new ResponseEntity<>(savedMenuItem, HttpStatus.CREATED);
@@ -42,7 +43,7 @@ public class MenuItemController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MenuItem> updateMenuItem(@PathVariable Long id, @RequestBody MenuItemDTO menuItemDTO) {
+    public ResponseEntity<MenuItem> updateMenuItem(@PathVariable Long id, @Valid @RequestBody MenuItemDTO menuItemDTO) {
         logger.debug("REST request to update Menu Item: {} with id {}", menuItemDTO, id);
         return ResponseEntity.ok(menuItemService.updateMenuItem(id, menuItemDTO));
     }

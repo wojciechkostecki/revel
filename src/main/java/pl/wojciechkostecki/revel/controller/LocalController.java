@@ -9,6 +9,7 @@ import pl.wojciechkostecki.revel.model.Local;
 import pl.wojciechkostecki.revel.model.dto.LocalDTO;
 import pl.wojciechkostecki.revel.service.LocalService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -22,7 +23,7 @@ public class LocalController {
     }
 
     @PostMapping
-    public ResponseEntity<Local> createLocal(@RequestBody LocalDTO localDTO) {
+    public ResponseEntity<Local> createLocal(@Valid @RequestBody LocalDTO localDTO) {
         logger.debug("REST request to create Local: {}", localDTO);
         Local savedLocal = localService.save(localDTO);
         return new ResponseEntity<>(savedLocal, HttpStatus.CREATED);
@@ -47,7 +48,7 @@ public class LocalController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Local> updateLocal(@PathVariable Long id, @RequestBody LocalDTO localDTO) {
+    public ResponseEntity<Local> updateLocal(@PathVariable Long id, @Valid @RequestBody LocalDTO localDTO) {
         logger.debug("REST request to update Local: {} with id {}", localDTO, id);
         return ResponseEntity.ok(localService.updateLocal(id, localDTO));
     }
