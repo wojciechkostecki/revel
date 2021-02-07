@@ -1,7 +1,7 @@
 package pl.wojciechkostecki.revel.service;
 
 import org.springframework.stereotype.Service;
-import pl.wojciechkostecki.revel.exception.MenuIsAlreadyAssignedException;
+import pl.wojciechkostecki.revel.exception.BadRequestException;
 import pl.wojciechkostecki.revel.mapper.MenuMapper;
 import pl.wojciechkostecki.revel.model.Local;
 import pl.wojciechkostecki.revel.model.Menu;
@@ -30,7 +30,7 @@ public class MenuService {
         Menu menu = menuMapper.toEntity(menuDTO);
         Local local = localService.findById(menuDTO.getLocalId());
         if (Objects.nonNull(local.getMenu())) {
-            throw new MenuIsAlreadyAssignedException(local.getMenu().getId(), menuDTO.getLocalId());
+            throw new BadRequestException(local.getMenu().getId(), menuDTO.getLocalId());
         }
         menu.setLocal(local);
         local.setMenu(menu);
