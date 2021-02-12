@@ -12,6 +12,8 @@ import java.util.Set;
 @Data
 public class MenuDTO {
 
+    private Long id;
+
     @NotBlank(message = "Name is mandatory")
     private String name;
 

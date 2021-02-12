@@ -9,6 +9,8 @@ import javax.validation.constraints.NotNull;
 @Data
 public class MenuItemDTO {
 
+    private Long id;
+
     @NotBlank(message = "Name is mandatory")
     private String name;
 

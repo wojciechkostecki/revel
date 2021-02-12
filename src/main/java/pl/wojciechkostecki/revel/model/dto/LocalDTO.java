@@ -9,6 +9,8 @@ import java.time.LocalTime;
 @Data
 public class LocalDTO {
 
+    private Long id;
+
     @NotBlank(message = "Name is mandatory")
     private String name;
 
