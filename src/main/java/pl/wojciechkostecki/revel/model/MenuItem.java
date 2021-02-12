@@ -2,11 +2,13 @@ package pl.wojciechkostecki.revel.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 
 @Entity
 @Data
+@EqualsAndHashCode(exclude = "menu")
 public class MenuItem {
 
     @Id

@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Entity
 @Data
-@EqualsAndHashCode(exclude = "menuItems")
+@EqualsAndHashCode(exclude = "local")
 public class Menu {
 
     @Id
