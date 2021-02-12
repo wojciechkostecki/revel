@@ -30,7 +30,7 @@ public class MenuService {
         Menu menu = menuMapper.toEntity(menuDTO);
         Local local = localService.findById(menuDTO.getLocalId());
         if (Objects.nonNull(local.getMenu())) {
-            throw new BadRequestException(local.getMenu().getId(), menuDTO.getLocalId());
+            throw new BadRequestException("Menu: {} is already assigned to local: {}", local.getMenu(),local);
         }
         menu.setLocal(local);
         local.setMenu(menu);
