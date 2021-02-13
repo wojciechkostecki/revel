@@ -12,6 +12,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -28,9 +29,10 @@ public class MenuService {
 
     public Menu save(MenuDTO menuDTO) {
         Menu menu = menuMapper.toEntity(menuDTO);
-        Local local = localService.findById(menuDTO.getLocalId());
+        Local local = localService.findById(menuDTO.getLocalId())
+                .orElseThrow(() -> new EntityNotFoundException("Couldn't find a local with passed id"));
         if (Objects.nonNull(local.getMenu())) {
-            throw new BadRequestException("Menu: {} is already assigned to local: {}", local.getMenu(),local);
+            throw new BadRequestException("Menu is already assigned to local");
         }
         menu.setLocal(local);
         local.setMenu(menu);
@@ -41,9 +43,8 @@ public class MenuService {
         return menuRepository.findAll();
     }
 
-    public Menu findById(Long id) {
-        return menuRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("Couldn't find a menu with id: %d", id)));
+    public Optional<Menu> findById(Long id) {
+        return menuRepository.findById(id);
     }
 
     public Menu updateMenu(Long id, MenuDTO menuDTO) {

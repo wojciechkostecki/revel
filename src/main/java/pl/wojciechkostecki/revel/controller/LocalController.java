@@ -38,7 +38,7 @@ public class LocalController {
     @GetMapping("/{id}")
     public ResponseEntity<Local> getLocal(@PathVariable Long id) {
         logger.debug("REST request to get Local: {}", id);
-        return ResponseEntity.ok(localService.findById(id));
+        return ResponseEntity.ok(localService.findById(id).get());
     }
 
     @GetMapping("/search")

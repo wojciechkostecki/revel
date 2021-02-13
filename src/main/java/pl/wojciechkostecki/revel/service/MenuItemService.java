@@ -7,6 +7,7 @@ import pl.wojciechkostecki.revel.model.MenuItem;
 import pl.wojciechkostecki.revel.model.dto.MenuItemDTO;
 import pl.wojciechkostecki.revel.repository.MenuItemRepository;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -25,7 +26,8 @@ public class MenuItemService {
 
     public MenuItem save(MenuItemDTO menuItemDTO){
         MenuItem menuItem = itemMapper.toEntity(menuItemDTO);
-        Menu menu = menuService.findById(menuItemDTO.getMenuId());
+        Menu menu = menuService.findById(menuItemDTO.getMenuId())
+                .orElseThrow(() -> new EntityNotFoundException("Couldn't find a menu with passed id"));
         menuItem.setMenu(menu);
         menu.getMenuItems().add(menuItem);
         return menuItemRepository.save(menuItem);

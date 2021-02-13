@@ -6,9 +6,9 @@ import pl.wojciechkostecki.revel.model.Local;
 import pl.wojciechkostecki.revel.model.dto.LocalDTO;
 import pl.wojciechkostecki.revel.repository.LocalRepository;
 
-import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -31,9 +31,8 @@ public class LocalService {
         return localRepository.findAll();
     }
 
-    public Local findById(Long id) {
-        return localRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("Couldn't find a local with id: %d", id)));
+    public Optional<Local> findById(Long id) {
+        return localRepository.findById(id);
     }
 
     public List<Local> findByName(String name) {
