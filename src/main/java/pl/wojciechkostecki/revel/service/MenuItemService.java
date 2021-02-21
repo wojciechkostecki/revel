@@ -27,7 +27,8 @@ public class MenuItemService {
     public MenuItem save(MenuItemDTO menuItemDTO){
         MenuItem menuItem = itemMapper.toEntity(menuItemDTO);
         Menu menu = menuService.findById(menuItemDTO.getMenuId())
-                .orElseThrow(() -> new EntityNotFoundException("Couldn't find a menu with passed id"));
+                .orElseThrow(() -> new EntityNotFoundException
+                        (String.format("Couldn't find a menu with passed id: %d", menuItemDTO.getMenuId())));
         menuItem.setMenu(menu);
         menu.getMenuItems().add(menuItem);
         return menuItemRepository.save(menuItem);
