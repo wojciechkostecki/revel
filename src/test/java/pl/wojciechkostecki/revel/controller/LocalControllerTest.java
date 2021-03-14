@@ -27,6 +27,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -64,12 +65,30 @@ class LocalControllerTest {
 //    }
 
     @Test
+    void getLocalByIdTest() throws Exception {
+        Local local = new Local();
+        local.setId(1L);
+        local.setName("Pijalnia");
+
+        when(mockRepository.findById(local.getId())).thenReturn(Optional.of(local));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/locals/" + local.getId()))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id", is(1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name", is(local.getName())));
+
+        verify(mockRepository, times(1)).findById(1L);
+    }
+
+    @Test
     void getAllLocalsTest() throws Exception {
         Local local = new Local();
         local.setName("Bue");
         Local local2 = new Local();
         local2.setName("Bue Bue");
-        List<Local>locals = Arrays.asList(local,local2);
+        List<Local> locals = Arrays.asList(local, local2);
 
         when(mockRepository.findAll()).thenReturn(locals);
 
@@ -80,11 +99,12 @@ class LocalControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].name", Matchers.is("Bue")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].name", Matchers.is("Bue Bue")));
 
-        verify(mockRepository,times(1)).findAll();
+        verify(mockRepository, times(1)).findAll();
     }
 
     @Test
     void getLocalsByNameTest() {
+
     }
 
     @Test
@@ -96,6 +116,6 @@ class LocalControllerTest {
     }
 
     @Test
-    void deleteLocalTest() {
+    void deleteLocalTest() throws Exception {
     }
 }
