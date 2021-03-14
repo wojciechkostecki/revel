@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -108,7 +109,22 @@ class LocalControllerTest {
     }
 
     @Test
-    void createLocalTest() {
+    void createLocalTest() throws Exception {
+        Local local = new Local();
+        local.setId(1L);
+        local.setName("Stary Browar");
+
+        when(mockRepository.save(any(Local.class))).thenReturn(local);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/locals")
+                .content(objectMapper.writeValueAsString(local))
+                .header(HttpHeaders.CONTENT_TYPE,MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id", is(1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name", is(local.getName())));
+
+        verify(mockRepository, times(1)).save(any(Local.class));
     }
 
     @Test
@@ -127,6 +143,6 @@ class LocalControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
 
-        verify(mockRepository,times(1)).deleteById(1L);
+        verify(mockRepository, times(1)).deleteById(1L);
     }
 }
