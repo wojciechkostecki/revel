@@ -117,5 +117,16 @@ class LocalControllerTest {
 
     @Test
     void deleteLocalTest() throws Exception {
+        Local local = new Local();
+        local.setId(1L);
+        local.setName("Kuźnia");
+
+        doNothing().when(mockRepository).deleteById(1l);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/locals/" + local.getId()))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
+
+        verify(mockRepository,times(1)).deleteById(1L);
     }
 }
