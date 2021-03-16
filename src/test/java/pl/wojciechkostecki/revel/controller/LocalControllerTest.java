@@ -117,24 +117,19 @@ class LocalControllerTest {
 //    void getLocalsByNameTest() {
 //    }
 //
-//    @Test
-//    void createLocalTest() throws Exception {
-//        Local local = new Local();
-//        local.setId(1L);
-//        local.setName("Stary Browar");
-//
-//        when(mockRepository.save(any(Local.class))).thenReturn(local);
-//
-//        mockMvc.perform(MockMvcRequestBuilders.post("/api/locals")
-//                .content(objectMapper.writeValueAsString(local))
-//                .header(HttpHeaders.CONTENT_TYPE,MediaType.APPLICATION_JSON))
-//                .andDo(MockMvcResultHandlers.print())
-//                .andExpect(MockMvcResultMatchers.status().isCreated())
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.id", is(1)))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.name", is(local.getName())));
-//
-//        verify(mockRepository, times(1)).save(any(Local.class));
-//    }
+    @Test
+    void createLocalTest() throws Exception {
+        Local local = new Local();
+        local.setName("Stary Browar");
+        localRepository.save(local);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/locals")
+                .content(objectMapper.writeValueAsString(local))
+                .header(HttpHeaders.CONTENT_TYPE,MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name", is(local.getName())));
+    }
 //
 //    @Test
 //    void updateLocalTest(){
