@@ -74,7 +74,6 @@ class LocalControllerTest {
         org.assertj.core.api.Assertions.assertThat(local.getName()).isEqualTo("Pijalnia");
         org.assertj.core.api.Assertions.assertThat(local.getOpeningTime()).isEqualTo(LocalTime.parse("16:00:00"));
         org.assertj.core.api.Assertions.assertThat(local.getClosingTime()).isEqualTo(LocalTime.parse("23:30:00"));
-
     }
 
     @Test
@@ -94,11 +93,30 @@ class LocalControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].name", Matchers.is(local.getName())))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].name", Matchers.is(local2.getName())));
     }
-//
-//    @Test
-//    void getLocalsByNameTest() {
-//    }
-//
+
+    @Test
+    void getLocalsByNameTest() throws Exception {
+        Local local = new Local();
+        local.setName("Bue");
+        localRepository.save(local);
+        Local local2 = new Local();
+        local2.setName("Pijalnia");
+        localRepository.save(local2);
+        Local local3 = new Local();
+        local3.setName("Bue Bue");
+        localRepository.save(local3);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/locals/search?name=bue"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().is(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(2)))
+                .andExpect(MockMvcResultMatchers.jsonPath
+                        ("$[0].name", Matchers.containsStringIgnoringCase("bue")))
+                .andExpect(MockMvcResultMatchers.jsonPath
+                        ("$[1].name", Matchers.containsStringIgnoringCase("bue")));
+    }
+
     @Test
     void createLocalTest() throws Exception {
         Local local = new Local();
