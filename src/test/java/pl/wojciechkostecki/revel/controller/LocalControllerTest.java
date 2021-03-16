@@ -1,45 +1,25 @@
 package pl.wojciechkostecki.revel.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.mockito.BDDMockito;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import pl.wojciechkostecki.revel.RevelApplication;
 import pl.wojciechkostecki.revel.model.Local;
 import pl.wojciechkostecki.revel.repository.LocalRepository;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.regex.Matcher;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -125,16 +105,30 @@ class LocalControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/locals")
                 .content(objectMapper.writeValueAsString(local))
-                .header(HttpHeaders.CONTENT_TYPE,MediaType.APPLICATION_JSON))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name", is(local.getName())));
     }
-//
-//    @Test
-//    void updateLocalTest(){
-//    }
-//
+
+    @Test
+    void updateLocalTest() throws Exception {
+        Local local = new Local();
+        local.setName("Browar");
+        localRepository.save(local);
+
+        Local modifiedLocal = new Local();
+        modifiedLocal.setName("Stary Browar");
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/locals/" + local.getId())
+                .content(objectMapper.writeValueAsString(modifiedLocal))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Stary Browar"));
+    }
+
     @Test
     void deleteLocalTest() throws Exception {
         Local local = new Local();
