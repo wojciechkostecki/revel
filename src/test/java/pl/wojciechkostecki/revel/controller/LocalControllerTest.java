@@ -29,6 +29,8 @@ import pl.wojciechkostecki.revel.RevelApplication;
 import pl.wojciechkostecki.revel.model.Local;
 import pl.wojciechkostecki.revel.repository.LocalRepository;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -57,6 +59,8 @@ class LocalControllerTest {
         //given
         Local local = new Local();
         local.setName("Pijalnia");
+        local.setOpeningTime(LocalTime.of(16, 0));
+        local.setClosingTime(LocalTime.of(23, 30));
         localRepository.save(local);
         //when
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/locals/" + local.getId()))
@@ -68,6 +72,8 @@ class LocalControllerTest {
         org.assertj.core.api.Assertions.assertThat(local2).isNotNull();
         org.assertj.core.api.Assertions.assertThat(local2.getId()).isEqualTo(local.getId());
         org.assertj.core.api.Assertions.assertThat(local2.getName()).isEqualTo("Pijalnia");
+        org.assertj.core.api.Assertions.assertThat(local2.getOpeningTime()).isEqualTo(LocalTime.parse("16:00:00"));
+        org.assertj.core.api.Assertions.assertThat(local2.getClosingTime()).isEqualTo(LocalTime.parse("23:30:00"));
 
     }
 
