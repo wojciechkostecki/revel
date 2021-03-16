@@ -57,23 +57,23 @@ class LocalControllerTest {
     @Test
     void getLocalTest() throws Exception {
         //given
-        Local local = new Local();
-        local.setName("Pijalnia");
-        local.setOpeningTime(LocalTime.of(16, 0));
-        local.setClosingTime(LocalTime.of(23, 30));
-        localRepository.save(local);
+        Local newLocal = new Local();
+        newLocal.setName("Pijalnia");
+        newLocal.setOpeningTime(LocalTime.of(16, 0));
+        newLocal.setClosingTime(LocalTime.of(23, 30));
+        localRepository.save(newLocal);
         //when
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/locals/" + local.getId()))
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/locals/" + newLocal.getId()))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().is(200))
                 .andReturn();
         //then
-        Local local2 = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Local.class);
-        org.assertj.core.api.Assertions.assertThat(local2).isNotNull();
-        org.assertj.core.api.Assertions.assertThat(local2.getId()).isEqualTo(local.getId());
-        org.assertj.core.api.Assertions.assertThat(local2.getName()).isEqualTo("Pijalnia");
-        org.assertj.core.api.Assertions.assertThat(local2.getOpeningTime()).isEqualTo(LocalTime.parse("16:00:00"));
-        org.assertj.core.api.Assertions.assertThat(local2.getClosingTime()).isEqualTo(LocalTime.parse("23:30:00"));
+        Local local = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Local.class);
+        org.assertj.core.api.Assertions.assertThat(local).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(local.getId()).isEqualTo(newLocal.getId());
+        org.assertj.core.api.Assertions.assertThat(local.getName()).isEqualTo("Pijalnia");
+        org.assertj.core.api.Assertions.assertThat(local.getOpeningTime()).isEqualTo(LocalTime.parse("16:00:00"));
+        org.assertj.core.api.Assertions.assertThat(local.getClosingTime()).isEqualTo(LocalTime.parse("23:30:00"));
 
     }
 
@@ -95,25 +95,23 @@ class LocalControllerTest {
 //        verify(mockRepository, times(1)).findById(1L);
 //    }
 //
-//    @Test
-//    void getAllLocalsTest() throws Exception {
-//        Local local = new Local();
-//        local.setName("Bue");
-//        Local local2 = new Local();
-//        local2.setName("Bue Bue");
-//        List<Local> locals = Arrays.asList(local, local2);
-//
-//        when(mockRepository.findAll()).thenReturn(locals);
-//
-//        mockMvc.perform(MockMvcRequestBuilders.get("/api/locals"))
-//                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(2)))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name", Matchers.is("Bue")))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$[1].name", Matchers.is("Bue Bue")));
-//
-//        verify(mockRepository, times(1)).findAll();
-//    }
+    @Test
+    void getAllLocalsTest() throws Exception {
+        Local local = new Local();
+        local.setName("Bue");
+        localRepository.save(local);
+        Local local2 = new Local();
+        local2.setName("Bue Bue");
+        localRepository.save(local2);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/locals"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(2)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name", Matchers.is(local.getName())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].name", Matchers.is(local2.getName())));
+    }
 //
 //    @Test
 //    void getLocalsByNameTest() {
