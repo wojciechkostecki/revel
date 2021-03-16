@@ -77,24 +77,6 @@ class LocalControllerTest {
 
     }
 
-//    @Test
-//    void getLocalByIdTest() throws Exception {
-//        Local local = new Local();
-//        local.setId(1L);
-//        local.setName("Pijalnia");
-//
-//        when(mockRepository.findById(local.getId())).thenReturn(Optional.of(local));
-//
-//        mockMvc.perform(MockMvcRequestBuilders.get("/api/locals/" + local.getId()))
-//                .andDo(MockMvcResultHandlers.print())
-//                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.id", is(1)))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.name", is(local.getName())));
-//
-//        verify(mockRepository, times(1)).findById(1L);
-//    }
-//
     @Test
     void getAllLocalsTest() throws Exception {
         Local local = new Local();
@@ -135,18 +117,14 @@ class LocalControllerTest {
 //    void updateLocalTest(){
 //    }
 //
-//    @Test
-//    void deleteLocalTest() throws Exception {
-//        Local local = new Local();
-//        local.setId(1L);
-//        local.setName("Kuźnia");
-//
-//        doNothing().when(mockRepository).deleteById(1L);
-//
-//        mockMvc.perform(MockMvcRequestBuilders.delete("/api/locals/" + local.getId()))
-//                .andDo(MockMvcResultHandlers.print())
-//                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
-//
-//        verify(mockRepository, times(1)).deleteById(1L);
-//    }
+    @Test
+    void deleteLocalTest() throws Exception {
+        Local local = new Local();
+        local.setName("Kuźnia");
+        localRepository.save(local);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/locals/" + local.getId()))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+    }
 }
