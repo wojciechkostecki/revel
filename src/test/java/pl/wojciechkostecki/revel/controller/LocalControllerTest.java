@@ -18,8 +18,7 @@ import pl.wojciechkostecki.revel.repository.LocalRepository;
 
 import java.time.LocalTime;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -95,6 +94,23 @@ class LocalControllerTest {
                         ("$[0].name", Matchers.containsStringIgnoringCase("bue")))
                 .andExpect(MockMvcResultMatchers.jsonPath
                         ("$[1].name", Matchers.containsStringIgnoringCase("bue")));
+    }
+
+    @Test
+    void getLocalsByNameWhenDoesNotExistTest() throws Exception {
+        Local local = new Local();
+        local.setName("Kuźnia");
+        localRepository.save(local);
+        Local local2 = new Local();
+        local2.setName("Pijalnia");
+        localRepository.save(local2);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/locals/search?name=bue"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(0)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$", empty()));
     }
 
     @Test
