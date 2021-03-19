@@ -1,6 +1,7 @@
 package pl.wojciechkostecki.revel.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.assertj.core.api.Assertions;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,6 +78,7 @@ class LocalControllerTest {
 
     @Test
     void getLocalsByNameTest() throws Exception {
+        //given
         Local local = new Local();
         local.setName("Bue");
         localRepository.save(local);
@@ -86,16 +88,17 @@ class LocalControllerTest {
         Local local3 = new Local();
         local3.setName("Bue Bue");
         localRepository.save(local3);
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/locals/search?name=bue"))
+        //when
+        MvcResult mvcResults = mockMvc.perform(MockMvcRequestBuilders.get("/api/locals/search?name=bue"))
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(2)))
-                .andExpect(MockMvcResultMatchers.jsonPath
-                        ("$[0].name", Matchers.containsStringIgnoringCase("bue")))
-                .andExpect(MockMvcResultMatchers.jsonPath
-                        ("$[1].name", Matchers.containsStringIgnoringCase("bue")));
+                .andReturn();
+        //then
+        Local[] locals = objectMapper.readValue(mvcResults.getResponse().getContentAsString(), Local[].class);
+        Assertions.assertThat(locals).isNotNull();
+        Assertions.assertThat(locals).hasSize(2);
+        Assertions.assertThat(locals[0].getName()).containsIgnoringCase("bue");
+        Assertions.assertThat(locals[1].getName()).containsIgnoringCase("bue");
     }
 
     @Test
