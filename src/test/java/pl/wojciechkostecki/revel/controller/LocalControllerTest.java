@@ -60,20 +60,24 @@ class LocalControllerTest {
 
     @Test
     void getAllLocalsTest() throws Exception {
+        //given
         Local local = new Local();
         local.setName("Bue");
         localRepository.save(local);
         Local local2 = new Local();
         local2.setName("Bue Bue");
         localRepository.save(local2);
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/locals"))
+        //when
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/locals"))
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(2)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name", Matchers.is(local.getName())))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].name", Matchers.is(local2.getName())));
+                .andReturn();
+        //then
+        Local[] locals = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Local[].class);
+        Assertions.assertThat(locals).isNotNull();
+        Assertions.assertThat(locals).hasSize(2);
+        Assertions.assertThat(locals[0].getName()).isEqualTo(local.getName());
+        Assertions.assertThat(locals[1].getName()).isEqualTo(local2.getName());
     }
 
     @Test
@@ -89,12 +93,12 @@ class LocalControllerTest {
         local3.setName("Bue Bue");
         localRepository.save(local3);
         //when
-        MvcResult mvcResults = mockMvc.perform(MockMvcRequestBuilders.get("/api/locals/search?name=bue"))
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/locals/search?name=bue"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().is(200))
                 .andReturn();
         //then
-        Local[] locals = objectMapper.readValue(mvcResults.getResponse().getContentAsString(), Local[].class);
+        Local[] locals = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Local[].class);
         Assertions.assertThat(locals).isNotNull();
         Assertions.assertThat(locals).hasSize(2);
         Assertions.assertThat(locals[0].getName()).containsIgnoringCase("bue");
