@@ -140,19 +140,31 @@ class LocalControllerTest {
     @Test
     void updateLocalTest() throws Exception {
         Local local = new Local();
-        local.setName("Browar");
+        local.setName("Stary Browar");
         localRepository.save(local);
 
-        Local modifiedLocal = new Local();
-        modifiedLocal.setName("Stary Browar");
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/locals/" + local.getId()))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().is(200))
+                .andReturn();
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/locals/" + local.getId())
-                .content(objectMapper.writeValueAsString(modifiedLocal))
+        Local originalLocal = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Local.class);
+        org.assertj.core.api.Assertions.assertThat(originalLocal.getId()).isEqualTo(local.getId());
+        org.assertj.core.api.Assertions.assertThat(originalLocal.getName()).isEqualTo(local.getName());
+
+        originalLocal.setName("Pijalnia");
+
+        MvcResult mvcResultAfterChange = mockMvc.perform(MockMvcRequestBuilders.put("/api/locals/" + local.getId())
+                .content(objectMapper.writeValueAsString(originalLocal))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Stary Browar"));
+                .andReturn();
+
+        Local changedLocal = objectMapper.readValue(mvcResultAfterChange.getResponse().getContentAsString(),Local.class);
+        Assertions.assertThat(changedLocal.getId()).isEqualTo(originalLocal.getId());
+        Assertions.assertThat(changedLocal.getName()).isEqualTo("Pijalnia");
     }
 
     @Test
