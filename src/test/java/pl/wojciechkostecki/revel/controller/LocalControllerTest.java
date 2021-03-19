@@ -16,12 +16,14 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import pl.wojciechkostecki.revel.model.Local;
 import pl.wojciechkostecki.revel.repository.LocalRepository;
 
+import javax.transaction.Transactional;
 import java.time.LocalTime;
 
 import static org.hamcrest.Matchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 class LocalControllerTest {
 
     @Autowired
