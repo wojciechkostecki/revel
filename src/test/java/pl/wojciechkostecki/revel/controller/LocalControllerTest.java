@@ -19,8 +19,6 @@ import pl.wojciechkostecki.revel.repository.LocalRepository;
 import javax.transaction.Transactional;
 import java.time.LocalTime;
 
-import static org.hamcrest.Matchers.*;
-
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
@@ -125,20 +123,32 @@ class LocalControllerTest {
 
     @Test
     void createLocalTest() throws Exception {
+        //given
         Local local = new Local();
         local.setName("Stary Browar");
+        local.setOpeningTime(LocalTime.of(16, 0));
+        local.setClosingTime(LocalTime.of(23, 30));
         localRepository.save(local);
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/locals")
+        //when
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/locals")
                 .content(objectMapper.writeValueAsString(local))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name", is(local.getName())));
+                .andReturn();
+        //then
+        Local savedLocal = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Local.class);
+        Assertions.assertThat(savedLocal).isNotNull();
+        Assertions.assertThat(savedLocal.getId()).isEqualTo(local.getId());
+        Assertions.assertThat(savedLocal.getName()).isEqualTo(local.getName());
+        Assertions.assertThat(savedLocal.getOpeningTime()).isEqualTo(LocalTime.parse("16:00:00"));
+        Assertions.assertThat(savedLocal.getClosingTime()).isEqualTo(LocalTime.parse("23:30:00"));
+        Assertions.assertThat(savedLocal.getMenu()).isNull();
     }
 
     @Test
     void updateLocalTest() throws Exception {
+        //given
         Local local = new Local();
         local.setName("Stary Browar");
         localRepository.save(local);
@@ -154,6 +164,7 @@ class LocalControllerTest {
 
         originalLocal.setName("Pijalnia");
 
+        //when
         MvcResult mvcResultAfterChange = mockMvc.perform(MockMvcRequestBuilders.put("/api/locals/" + local.getId())
                 .content(objectMapper.writeValueAsString(originalLocal))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -162,7 +173,8 @@ class LocalControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 
-        Local changedLocal = objectMapper.readValue(mvcResultAfterChange.getResponse().getContentAsString(),Local.class);
+        //then
+        Local changedLocal = objectMapper.readValue(mvcResultAfterChange.getResponse().getContentAsString(), Local.class);
         Assertions.assertThat(changedLocal.getId()).isEqualTo(originalLocal.getId());
         Assertions.assertThat(changedLocal.getName()).isEqualTo("Pijalnia");
     }
