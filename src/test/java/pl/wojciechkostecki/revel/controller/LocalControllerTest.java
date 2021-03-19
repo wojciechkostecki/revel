@@ -2,7 +2,6 @@ package pl.wojciechkostecki.revel.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -107,19 +106,21 @@ class LocalControllerTest {
 
     @Test
     void getLocalsByNameWhenDoesNotExistTest() throws Exception {
+        //given
         Local local = new Local();
         local.setName("Kuźnia");
         localRepository.save(local);
         Local local2 = new Local();
         local2.setName("Pijalnia");
         localRepository.save(local2);
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/locals/search?name=bue"))
+        //when
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/locals/search?name=bue"))
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(0)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$", empty()));
+                .andReturn();
+        //then
+        Local[] locals = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Local[].class);
+        Assertions.assertThat(locals).isEmpty();
     }
 
     @Test
