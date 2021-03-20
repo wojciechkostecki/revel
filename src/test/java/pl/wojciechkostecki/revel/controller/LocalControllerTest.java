@@ -2,6 +2,7 @@ package pl.wojciechkostecki.revel.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -184,6 +185,12 @@ class LocalControllerTest {
         Local local = new Local();
         local.setName("Kuźnia");
         localRepository.save(local);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/locals/" + local.getId()))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().is(200))
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name", Matchers.is(local.getName())));
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/locals/" + local.getId()))
                 .andDo(MockMvcResultHandlers.print())
