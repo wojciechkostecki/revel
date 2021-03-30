@@ -1,6 +1,5 @@
 package pl.wojciechkostecki.revel.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
@@ -9,7 +8,6 @@ import java.time.LocalTime;
 
 @Entity
 @Data
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Local {
 
     @Id

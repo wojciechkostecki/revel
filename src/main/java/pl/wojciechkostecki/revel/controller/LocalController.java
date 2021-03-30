@@ -2,9 +2,11 @@ package pl.wojciechkostecki.revel.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.wojciechkostecki.revel.mapper.LocalMapper;
 import pl.wojciechkostecki.revel.model.Local;
 import pl.wojciechkostecki.revel.model.dto.LocalDTO;
 import pl.wojciechkostecki.revel.service.LocalService;
@@ -17,9 +19,11 @@ import java.util.List;
 public class LocalController {
     private final Logger logger = LoggerFactory.getLogger(LocalController.class);
     private final LocalService localService;
+    private final LocalMapper localMapper;
 
-    public LocalController(LocalService localService) {
+    public LocalController(LocalService localService, LocalMapper localMapper) {
         this.localService = localService;
+        this.localMapper = localMapper;
     }
 
     @PostMapping
@@ -48,9 +52,9 @@ public class LocalController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Local> updateLocal(@PathVariable Long id, @Valid @RequestBody LocalDTO localDTO) {
+    public ResponseEntity<LocalDTO> updateLocal(@PathVariable Long id, @Valid @RequestBody LocalDTO localDTO) {
         logger.debug("REST request to update Local: {} with id {}", localDTO, id);
-        return ResponseEntity.ok(localService.updateLocal(id, localDTO));
+        return ResponseEntity.ok(localMapper.toDto(localService.updateLocal(id, localDTO)));
     }
 
     @DeleteMapping("/{id}")
