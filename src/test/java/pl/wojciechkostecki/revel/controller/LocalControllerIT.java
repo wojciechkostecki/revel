@@ -194,14 +194,14 @@ class LocalControllerIT {
         local.setName("Kuźnia");
         localRepository.save(local);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/locals/" + local.getId()))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().is(200))
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name", Matchers.is(local.getName())));
+        int dbSize = localRepository.findAll().size();
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/locals/" + local.getId()))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
+
+        int dbSizeAfter = localRepository.findAll().size();
+
+        Assertions.assertThat(dbSizeAfter).isEqualTo(dbSize-1);
     }
 }
