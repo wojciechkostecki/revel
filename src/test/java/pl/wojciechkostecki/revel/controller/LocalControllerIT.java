@@ -161,8 +161,6 @@ class LocalControllerIT {
         local.setName("Stary Browar");
         localRepository.save(local);
 
-        int dbSize = localRepository.findAll().size();
-
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/locals/" + local.getId()))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().is(200))
@@ -184,11 +182,8 @@ class LocalControllerIT {
                 .andReturn();
 
         //then
-        int dbSizeAfter = localRepository.findAll().size();
+        Local changedLocal = localRepository.getOne(originalLocal.getId());
 
-        Assertions.assertThat(dbSizeAfter).isEqualTo(dbSize);
-
-        Local changedLocal = objectMapper.readValue(mvcResultAfterChange.getResponse().getContentAsString(), Local.class);
         Assertions.assertThat(changedLocal.getId()).isEqualTo(originalLocal.getId());
         Assertions.assertThat(changedLocal.getName()).isEqualTo("Pijalnia");
     }
