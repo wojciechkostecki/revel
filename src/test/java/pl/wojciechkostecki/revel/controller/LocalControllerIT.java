@@ -23,7 +23,7 @@ import java.time.LocalTime;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class LocalControllerTest {
+class LocalControllerIT {
 
     @Autowired
     private MockMvc mockMvc;
