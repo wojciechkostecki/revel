@@ -129,7 +129,9 @@ class LocalControllerTest {
         local.setName("Stary Browar");
         local.setOpeningTime(LocalTime.of(16, 0));
         local.setClosingTime(LocalTime.of(23, 30));
-        localRepository.save(local);
+
+        int dbSize = localRepository.findAll().size();
+
         //when
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/locals")
                 .content(objectMapper.writeValueAsString(local))
@@ -138,9 +140,15 @@ class LocalControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andReturn();
         //then
+
+        int dbSizeAfter = localRepository.findAll().size();
+
+        Assertions.assertThat(dbSizeAfter).isEqualTo(dbSize+1);
+
         Local savedLocal = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Local.class);
+        savedLocal = localRepository.getOne(savedLocal.getId());
+
         Assertions.assertThat(savedLocal).isNotNull();
-        Assertions.assertThat(savedLocal.getId()).isEqualTo(local.getId());
         Assertions.assertThat(savedLocal.getName()).isEqualTo(local.getName());
         Assertions.assertThat(savedLocal.getOpeningTime()).isEqualTo(LocalTime.parse("16:00:00"));
         Assertions.assertThat(savedLocal.getClosingTime()).isEqualTo(LocalTime.parse("23:30:00"));
