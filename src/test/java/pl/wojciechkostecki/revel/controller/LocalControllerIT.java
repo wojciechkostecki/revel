@@ -19,6 +19,8 @@ import pl.wojciechkostecki.revel.repository.LocalRepository;
 import javax.transaction.Transactional;
 import java.time.LocalTime;
 
+import static org.assertj.core.api.Assertions.*;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
@@ -48,11 +50,11 @@ class LocalControllerIT {
                 .andReturn();
         //then
         Local local = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Local.class);
-        org.assertj.core.api.Assertions.assertThat(local).isNotNull();
-        org.assertj.core.api.Assertions.assertThat(local.getId()).isEqualTo(newLocal.getId());
-        org.assertj.core.api.Assertions.assertThat(local.getName()).isEqualTo("Pijalnia");
-        org.assertj.core.api.Assertions.assertThat(local.getOpeningTime()).isEqualTo(LocalTime.parse("16:00:00"));
-        org.assertj.core.api.Assertions.assertThat(local.getClosingTime()).isEqualTo(LocalTime.parse("23:30:00"));
+        assertThat(local).isNotNull();
+        assertThat(local.getId()).isEqualTo(newLocal.getId());
+        assertThat(local.getName()).isEqualTo("Pijalnia");
+        assertThat(local.getOpeningTime()).isEqualTo(LocalTime.parse("16:00:00"));
+        assertThat(local.getClosingTime()).isEqualTo(LocalTime.parse("23:30:00"));
     }
 
     @Test
@@ -71,10 +73,10 @@ class LocalControllerIT {
                 .andReturn();
         //then
         Local[] locals = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Local[].class);
-        Assertions.assertThat(locals).isNotNull();
-        Assertions.assertThat(locals).hasSize(2);
-        Assertions.assertThat(locals[0].getName()).isEqualTo(local.getName());
-        Assertions.assertThat(locals[1].getName()).isEqualTo(local2.getName());
+        assertThat(locals).isNotNull();
+        assertThat(locals).hasSize(2);
+        assertThat(locals[0].getName()).isEqualTo(local.getName());
+        assertThat(locals[1].getName()).isEqualTo(local2.getName());
     }
 
     @Test
@@ -96,10 +98,10 @@ class LocalControllerIT {
                 .andReturn();
         //then
         Local[] locals = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Local[].class);
-        Assertions.assertThat(locals).isNotNull();
-        Assertions.assertThat(locals).hasSize(2);
-        Assertions.assertThat(locals[0].getName()).containsIgnoringCase("bue");
-        Assertions.assertThat(locals[1].getName()).containsIgnoringCase("bue");
+        assertThat(locals).isNotNull();
+        assertThat(locals).hasSize(2);
+        assertThat(locals[0].getName()).containsIgnoringCase("bue");
+        assertThat(locals[1].getName()).containsIgnoringCase("bue");
     }
 
     @Test
@@ -118,7 +120,7 @@ class LocalControllerIT {
                 .andReturn();
         //then
         Local[] locals = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Local[].class);
-        Assertions.assertThat(locals).isEmpty();
+        assertThat(locals).isEmpty();
     }
 
     @Test
@@ -142,16 +144,16 @@ class LocalControllerIT {
 
         int dbSizeAfter = localRepository.findAll().size();
 
-        Assertions.assertThat(dbSizeAfter).isEqualTo(dbSize+1);
+        assertThat(dbSizeAfter).isEqualTo(dbSize+1);
 
         Local savedLocal = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Local.class);
         savedLocal = localRepository.getOne(savedLocal.getId());
 
-        Assertions.assertThat(savedLocal).isNotNull();
-        Assertions.assertThat(savedLocal.getName()).isEqualTo(local.getName());
-        Assertions.assertThat(savedLocal.getOpeningTime()).isEqualTo(LocalTime.parse("16:00:00"));
-        Assertions.assertThat(savedLocal.getClosingTime()).isEqualTo(LocalTime.parse("23:30:00"));
-        Assertions.assertThat(savedLocal.getMenu()).isNull();
+        assertThat(savedLocal).isNotNull();
+        assertThat(savedLocal.getName()).isEqualTo(local.getName());
+        assertThat(savedLocal.getOpeningTime()).isEqualTo(LocalTime.parse("16:00:00"));
+        assertThat(savedLocal.getClosingTime()).isEqualTo(LocalTime.parse("23:30:00"));
+        assertThat(savedLocal.getMenu()).isNull();
     }
 
     @Test
@@ -167,8 +169,8 @@ class LocalControllerIT {
                 .andReturn();
 
         Local originalLocal = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Local.class);
-        org.assertj.core.api.Assertions.assertThat(originalLocal.getId()).isEqualTo(local.getId());
-        org.assertj.core.api.Assertions.assertThat(originalLocal.getName()).isEqualTo(local.getName());
+        assertThat(originalLocal.getId()).isEqualTo(local.getId());
+        assertThat(originalLocal.getName()).isEqualTo(local.getName());
 
         originalLocal.setName("Pijalnia");
 
@@ -184,8 +186,8 @@ class LocalControllerIT {
         //then
         Local changedLocal = localRepository.getOne(originalLocal.getId());
 
-        Assertions.assertThat(changedLocal.getId()).isEqualTo(originalLocal.getId());
-        Assertions.assertThat(changedLocal.getName()).isEqualTo("Pijalnia");
+        assertThat(changedLocal.getId()).isEqualTo(originalLocal.getId());
+        assertThat(changedLocal.getName()).isEqualTo("Pijalnia");
     }
 
     @Test
@@ -202,6 +204,6 @@ class LocalControllerIT {
 
         int dbSizeAfter = localRepository.findAll().size();
 
-        Assertions.assertThat(dbSizeAfter).isEqualTo(dbSize-1);
+        assertThat(dbSizeAfter).isEqualTo(dbSize-1);
     }
 }
