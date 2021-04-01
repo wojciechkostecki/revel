@@ -1,7 +1,6 @@
 package pl.wojciechkostecki.revel.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,7 +21,7 @@ import pl.wojciechkostecki.revel.repository.MenuRepository;
 
 import javax.transaction.Transactional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -41,15 +40,18 @@ class MenuControllerIT {
     @Autowired
     private MenuRepository menuRepository;
 
+    @Autowired
+    private MenuMapper menuMapper;
+
     @Test
     void createMenuTest() throws Exception {
         //given
         Local local = new Local();
-        local.setName("Kuźnia");
+        local.setName("Stary Browar");
         localRepository.save(local);
 
         MenuDTO menu = new MenuDTO();
-        menu.setName("Stary Browar");
+        menu.setName("Menu Stary Browar");
         menu.setLocalId(local.getId());
 
         int dbSize = menuRepository.findAll().size();
@@ -59,7 +61,8 @@ class MenuControllerIT {
                 .content(objectMapper.writeValueAsString(menu))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isCreated()).andReturn();
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andReturn();
 
         //then
         int dbSizeAfter = menuRepository.findAll().size();
@@ -72,6 +75,42 @@ class MenuControllerIT {
         assertThat(savedMenu).isNotNull();
         assertThat(savedMenu.getName()).isEqualTo(menu.getName());
         assertThat(savedMenu.getLocal()).isEqualTo(local);
+    }
+
+    @Test
+    void getAllMenus() throws Exception {
+        //given
+        Local local = new Local();
+        local.setName("Bue Bue");
+        localRepository.save(local);
+
+        MenuDTO menu = new MenuDTO();
+        menu.setName("Menu Bue Bue");
+        menu.setLocalId(local.getId());
+        menuRepository.save(menuMapper.toEntity(menu));
+
+        Local local2 = new Local();
+        local2.setName("Stary Browar");
+        localRepository.save(local2);
+
+        MenuDTO menu2 = new MenuDTO();
+        menu2.setName("Menu Stary Browar");
+        menu2.setLocalId(local2.getId());
+        menuRepository.save(menuMapper.toEntity(menu2));
+
+        //when
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/menus"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        //then
+        Menu[] menus = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),Menu[].class);
+
+        assertThat(menus).isNotNull();
+        assertThat(menus).hasSize(2);
+        assertThat(menus[0].getName()).isEqualTo(menu.getName());
+        assertThat(menus[1].getName()).isEqualTo(menu2.getName());
     }
 
 
