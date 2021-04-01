@@ -80,23 +80,13 @@ class MenuControllerIT {
     @Test
     void getAllMenus() throws Exception {
         //given
-        Local local = new Local();
-        local.setName("Bue Bue");
-        localRepository.save(local);
-
-        MenuDTO menu = new MenuDTO();
+        Menu menu = new Menu();
         menu.setName("Menu Bue Bue");
-        menu.setLocalId(local.getId());
-        menuRepository.save(menuMapper.toEntity(menu));
+        menuRepository.save(menu);
 
-        Local local2 = new Local();
-        local2.setName("Stary Browar");
-        localRepository.save(local2);
-
-        MenuDTO menu2 = new MenuDTO();
+        Menu menu2 = new Menu();
         menu2.setName("Menu Stary Browar");
-        menu2.setLocalId(local2.getId());
-        menuRepository.save(menuMapper.toEntity(menu2));
+        menuRepository.save(menu2);
 
         //when
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/menus"))
@@ -112,6 +102,4 @@ class MenuControllerIT {
         assertThat(menus[0].getName()).isEqualTo(menu.getName());
         assertThat(menus[1].getName()).isEqualTo(menu2.getName());
     }
-
-
 }
