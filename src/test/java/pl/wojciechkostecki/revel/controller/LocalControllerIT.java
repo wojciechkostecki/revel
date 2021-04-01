@@ -174,13 +174,12 @@ class LocalControllerIT {
         originalLocal.setName("Pijalnia");
 
         //when
-        MvcResult mvcResultAfterChange = mockMvc.perform(MockMvcRequestBuilders.put("/api/locals/" + local.getId())
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/locals/" + local.getId())
                 .content(objectMapper.writeValueAsString(originalLocal))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn();
+                .andExpect(MockMvcResultMatchers.status().isOk());
 
         //then
         Local changedLocal = localRepository.getOne(originalLocal.getId());
