@@ -102,4 +102,21 @@ class MenuControllerIT {
         assertThat(menus[0].getName()).isEqualTo(menu.getName());
         assertThat(menus[1].getName()).isEqualTo(menu2.getName());
     }
+
+    @Test
+    void deleteMenuTest() throws Exception {
+        Menu menu = new Menu();
+        menu.setName("Menu Bue Bue");
+        menuRepository.save(menu);
+
+        int dbSize = menuRepository.findAll().size();
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/menus/"+ menu.getId()))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+
+        int dbSizeAfter = menuRepository.findAll().size();
+
+        assertThat(dbSizeAfter).isEqualTo(dbSize-1);
+    }
 }
