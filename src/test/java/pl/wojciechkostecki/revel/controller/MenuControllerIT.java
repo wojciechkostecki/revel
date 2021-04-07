@@ -40,9 +40,6 @@ class MenuControllerIT {
     @Autowired
     private MenuRepository menuRepository;
 
-    @Autowired
-    private MenuMapper menuMapper;
-
     @Test
     void createMenuTest() throws Exception {
         //given
@@ -67,10 +64,10 @@ class MenuControllerIT {
         //then
         int dbSizeAfter = menuRepository.findAll().size();
 
-        assertThat(dbSizeAfter).isEqualTo(dbSize+1);
+        assertThat(dbSizeAfter).isEqualTo(dbSize + 1);
 
         Menu savedMenu = menuRepository.getOne
-                (objectMapper.readValue(mvcResult.getResponse().getContentAsString(),Menu.class).getId());
+                (objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Menu.class).getId());
 
         assertThat(savedMenu).isNotNull();
         assertThat(savedMenu.getName()).isEqualTo(menu.getName());
@@ -95,10 +92,13 @@ class MenuControllerIT {
                 .andReturn();
 
         //then
-        Menu[] menus = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),Menu[].class);
+        Menu[] menus = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Menu[].class);
+
+        // zmienić tablicę na listę, a potem przez streama wyszukać w liście obiekt po danym id i porównać z id obiektu zapisanego ręcznie
 
         assertThat(menus).isNotNull();
         assertThat(menus).hasSize(2);
+
         assertThat(menus[0].getName()).isEqualTo(menu.getName());
         assertThat(menus[1].getName()).isEqualTo(menu2.getName());
     }
@@ -111,12 +111,46 @@ class MenuControllerIT {
 
         int dbSize = menuRepository.findAll().size();
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/menus/"+ menu.getId()))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/menus/" + menu.getId()))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
         int dbSizeAfter = menuRepository.findAll().size();
 
-        assertThat(dbSizeAfter).isEqualTo(dbSize-1);
+        assertThat(dbSizeAfter).isEqualTo(dbSize - 1);
+    }
+
+    @Test
+    void updateMenuTest() throws Exception {
+        //given
+        Local local = new Local();
+        local.setName("Stary Browar");
+        localRepository.save(local);
+
+        MenuDTO menu = new MenuDTO();
+        menu.setName("Menu Stary Browar");
+        menu.setLocalId(local.getId());
+
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/menus")
+                .content(objectMapper.writeValueAsString(menu))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andReturn();
+
+        MenuDTO originalMenu = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),MenuDTO.class);
+        originalMenu.setName("Menu");
+        //when
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/menus/" + originalMenu.getId())
+                .content(objectMapper.writeValueAsString(originalMenu))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk());
+        //then
+        Menu changedMenu = menuRepository.getOne(originalMenu.getId());
+
+        assertThat(changedMenu.getId()).isEqualTo(originalMenu.getId());
+        assertThat(changedMenu.getName()).isEqualTo("Menu");
     }
 }
