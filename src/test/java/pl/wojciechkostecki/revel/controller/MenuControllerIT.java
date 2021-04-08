@@ -1,5 +1,6 @@
 package pl.wojciechkostecki.revel.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,7 @@ import pl.wojciechkostecki.revel.repository.MenuRepository;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -160,13 +162,12 @@ class MenuControllerIT {
                 .andReturn();
 
         //then
-        Menu[] menus = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Menu[].class);
+        List<Menu> menus = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<List<Menu>>() {});
 
         assertThat(menus).isNotNull();
         assertThat(menus).hasSize(2);
-
-        assertThat(menus[0].getName()).isEqualTo(menu.getName());
-        assertThat(menus[1].getName()).isEqualTo(menu2.getName());
+        assertThat(menus).contains(menu);
+        assertThat(menus).contains(menu2);
     }
 
     @Test
