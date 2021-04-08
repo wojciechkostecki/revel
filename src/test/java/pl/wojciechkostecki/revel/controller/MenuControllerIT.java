@@ -1,6 +1,7 @@
 package pl.wojciechkostecki.revel.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -12,12 +13,14 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import pl.wojciechkostecki.revel.exception.BadRequestException;
 import pl.wojciechkostecki.revel.model.Local;
 import pl.wojciechkostecki.revel.model.Menu;
 import pl.wojciechkostecki.revel.model.dto.MenuDTO;
 import pl.wojciechkostecki.revel.repository.LocalRepository;
 import pl.wojciechkostecki.revel.repository.MenuRepository;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -91,8 +94,8 @@ class MenuControllerIT {
                 .andExpect(MockMvcResultMatchers.status().isCreated());
 
         MenuDTO menu2 = new MenuDTO();
-        menu.setName("Menu");
-        menu.setLocalId(local.getId());
+        menu2.setName("Menu");
+        menu2.setLocalId(local.getId());
 
         int dbSize = menuRepository.findAll().size();
 
@@ -101,7 +104,11 @@ class MenuControllerIT {
                 .content(objectMapper.writeValueAsString(menu2))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof BadRequestException))
+                .andExpect(result -> Assertions.assertEquals("Menu is already assigned to local",
+                        result.getResolvedException().getMessage()));
+        ;
 
         //then
         int dbSizeAfter = menuRepository.findAll().size();
@@ -123,7 +130,10 @@ class MenuControllerIT {
                 .content(objectMapper.writeValueAsString(menu))
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof EntityNotFoundException))
+                .andExpect(result -> Assertions.assertEquals("Couldn't find a local with passed id: " + menu.getLocalId(),
+                        result.getResolvedException().getMessage()));
 
 
         //then
