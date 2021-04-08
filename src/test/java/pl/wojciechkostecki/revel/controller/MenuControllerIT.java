@@ -12,7 +12,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import pl.wojciechkostecki.revel.mapper.MenuMapper;
 import pl.wojciechkostecki.revel.model.Local;
 import pl.wojciechkostecki.revel.model.Menu;
 import pl.wojciechkostecki.revel.model.dto.MenuDTO;
@@ -75,6 +74,29 @@ class MenuControllerIT {
     }
 
     @Test
+    void createMenuTestWhenTheLocalCannotBeFound() throws Exception {
+        //given
+        MenuDTO menu = new MenuDTO();
+        menu.setName("Menu Stary Browar");
+        menu.setLocalId(3L);
+
+        int dbSize = menuRepository.findAll().size();
+
+        //when
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/menus")
+                .content(objectMapper.writeValueAsString(menu))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+
+        //then
+        int dbSizeAfter = menuRepository.findAll().size();
+
+        assertThat(dbSizeAfter).isEqualTo(dbSize);
+    }
+
+    @Test
     void getAllMenus() throws Exception {
         //given
         Menu menu = new Menu();
@@ -93,8 +115,6 @@ class MenuControllerIT {
 
         //then
         Menu[] menus = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Menu[].class);
-
-        // zmienić tablicę na listę, a potem przez streama wyszukać w liście obiekt po danym id i porównać z id obiektu zapisanego ręcznie
 
         assertThat(menus).isNotNull();
         assertThat(menus).hasSize(2);
