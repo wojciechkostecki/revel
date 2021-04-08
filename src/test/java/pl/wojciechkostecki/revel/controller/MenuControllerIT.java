@@ -74,7 +74,43 @@ class MenuControllerIT {
     }
 
     @Test
-    void createMenuTestWhenTheLocalCannotBeFound() throws Exception {
+    void createMenuWhenMenuIsAlreadyAssignedToLocalTest() throws Exception {
+        //given
+        Local local = new Local();
+        local.setName("Stary Browar");
+        localRepository.save(local);
+
+        MenuDTO menu = new MenuDTO();
+        menu.setName("Menu Stary Browar");
+        menu.setLocalId(local.getId());
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/menus")
+                .content(objectMapper.writeValueAsString(menu))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isCreated());
+
+        MenuDTO menu2 = new MenuDTO();
+        menu.setName("Menu");
+        menu.setLocalId(local.getId());
+
+        int dbSize = menuRepository.findAll().size();
+
+        //when
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/menus")
+                .content(objectMapper.writeValueAsString(menu2))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+        //then
+        int dbSizeAfter = menuRepository.findAll().size();
+
+        assertThat(dbSizeAfter).isEqualTo(dbSize);
+    }
+
+    @Test
+    void createMenuWhenTheLocalCannotBeFoundTest() throws Exception {
         //given
         MenuDTO menu = new MenuDTO();
         menu.setName("Menu Stary Browar");
@@ -158,7 +194,7 @@ class MenuControllerIT {
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andReturn();
 
-        MenuDTO originalMenu = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),MenuDTO.class);
+        MenuDTO originalMenu = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), MenuDTO.class);
         originalMenu.setName("Menu");
         //when
         mockMvc.perform(MockMvcRequestBuilders.put("/api/menus/" + originalMenu.getId())
