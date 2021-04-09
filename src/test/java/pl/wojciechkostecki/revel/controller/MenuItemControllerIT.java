@@ -16,13 +16,11 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import pl.wojciechkostecki.revel.mapper.MenuItemMapper;
 import pl.wojciechkostecki.revel.model.Menu;
 import pl.wojciechkostecki.revel.model.MenuItem;
-import pl.wojciechkostecki.revel.model.dto.MenuDTO;
 import pl.wojciechkostecki.revel.model.dto.MenuItemDTO;
 import pl.wojciechkostecki.revel.repository.MenuItemRepository;
 import pl.wojciechkostecki.revel.repository.MenuRepository;
 
 import javax.transaction.Transactional;
-
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -90,7 +88,7 @@ class MenuItemControllerIT {
         menuItem.setName("Krupnik");
         menuItem.setMenu(menu);
         itemRepository.save(menuItem);
-        
+
         MenuItem menuItem2 = new MenuItem();
         menuItem2.setName("Paluszki");
         menuItem2.setMenu(menu);
@@ -122,6 +120,24 @@ class MenuItemControllerIT {
     }
 
     @Test
-    void deleteMenuItemTest() {
+    void deleteMenuItemTest() throws Exception {
+        Menu menu = new Menu();
+        menu.setName("Menu");
+        menuRepository.save(menu);
+
+        MenuItem item = new MenuItem();
+        item.setName("Woda");
+        item.setMenu(menu);
+        itemRepository.save(item);
+
+        int dbSize = itemRepository.findAll().size();
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/menu-items/" + item.getId()))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+
+        int dbSizeAfter = itemRepository.findAll().size();
+
+        assertThat(dbSizeAfter).isEqualTo(dbSize - 1);
     }
 }
