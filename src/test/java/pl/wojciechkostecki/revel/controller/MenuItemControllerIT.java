@@ -1,5 +1,6 @@
 package pl.wojciechkostecki.revel.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +13,17 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import pl.wojciechkostecki.revel.mapper.MenuItemMapper;
 import pl.wojciechkostecki.revel.model.Menu;
 import pl.wojciechkostecki.revel.model.MenuItem;
+import pl.wojciechkostecki.revel.model.dto.MenuDTO;
 import pl.wojciechkostecki.revel.model.dto.MenuItemDTO;
 import pl.wojciechkostecki.revel.repository.MenuItemRepository;
 import pl.wojciechkostecki.revel.repository.MenuRepository;
 
 import javax.transaction.Transactional;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,6 +42,9 @@ class MenuItemControllerIT {
 
     @Autowired
     private MenuItemRepository itemRepository;
+
+    @Autowired
+    private MenuItemMapper itemMapper;
 
     @Test
     void createMenuItemTest() throws Exception{
@@ -72,7 +80,37 @@ class MenuItemControllerIT {
     }
 
     @Test
-    void getAllMenuItemsTest() {
+    void getAllMenuItemsTest() throws Exception{
+        //given
+        Menu menu = new Menu();
+        menu.setName("Menu");
+        menuRepository.save(menu);
+
+        MenuItem menuItem = new MenuItem();
+        menuItem.setName("Krupnik");
+        menuItem.setMenu(menu);
+        itemRepository.save(menuItem);
+        
+        MenuItem menuItem2 = new MenuItem();
+        menuItem2.setName("Paluszki");
+        menuItem2.setMenu(menu);
+        itemRepository.save(menuItem2);
+
+        //when
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/menu-items"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        //then
+        List<MenuItemDTO> itemsDTO = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
+                new TypeReference<List<MenuItemDTO>>() {});
+        List<MenuItem> items = itemMapper.toEntity(itemsDTO);
+
+        assertThat(items).isNotNull();
+        assertThat(items).hasSize(2);
+        assertThat(items).contains(menuItem);
+        assertThat(items).contains(menuItem2);
     }
 
     @Test
