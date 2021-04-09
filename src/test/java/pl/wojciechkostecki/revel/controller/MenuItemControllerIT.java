@@ -3,6 +3,7 @@ package pl.wojciechkostecki.revel.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -21,6 +22,7 @@ import pl.wojciechkostecki.revel.model.dto.MenuItemDTO;
 import pl.wojciechkostecki.revel.repository.MenuItemRepository;
 import pl.wojciechkostecki.revel.repository.MenuRepository;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -76,6 +78,33 @@ class MenuItemControllerIT {
 
         assertThat(savedItem).isNotNull();
         assertThat(savedItem.getName()).isEqualTo(menuItem.getName());
+    }
+
+    @Test
+    void createMenuItemWhenTheMenuCannotBeFoundTest() throws Exception {
+        //given
+        MenuItemDTO item = new MenuItemDTO();
+        item.setName("Woda");
+        item.setMenuId(3L);
+
+        int dbSize = itemRepository.findAll().size();
+
+        //when
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/menu-items")
+                .content(objectMapper.writeValueAsString(item))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof EntityNotFoundException))
+                .andExpect(result -> Assertions.assertEquals("Couldn't find a menu with passed id: " + item.getMenuId(),
+                        result.getResolvedException().getMessage()));
+
+
+        //then
+        int dbSizeAfter = itemRepository.findAll().size();
+
+        assertThat(dbSizeAfter).isEqualTo(dbSize);
+
     }
 
     @Test
