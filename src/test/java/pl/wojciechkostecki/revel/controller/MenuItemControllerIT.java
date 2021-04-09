@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import pl.wojciechkostecki.revel.mapper.MenuItemMapper;
+import pl.wojciechkostecki.revel.model.Local;
 import pl.wojciechkostecki.revel.model.Menu;
 import pl.wojciechkostecki.revel.model.MenuItem;
 import pl.wojciechkostecki.revel.model.dto.MenuItemDTO;
@@ -112,7 +113,40 @@ class MenuItemControllerIT {
     }
 
     @Test
-    void getMenuItemsByNameTest() {
+    void getMenuItemsByNameTest() throws Exception {
+        Menu menu = new Menu();
+        menu.setName("Menu");
+        menuRepository.save(menu);
+
+        MenuItem menuItem = new MenuItem();
+        menuItem.setName("Woda gazowana");
+        menuItem.setMenu(menu);
+        itemRepository.save(menuItem);
+
+        MenuItem menuItem2 = new MenuItem();
+        menuItem2.setName("Paluszki");
+        menuItem2.setMenu(menu);
+        itemRepository.save(menuItem2);
+
+        MenuItem menuItem3 = new MenuItem();
+        menuItem3.setName("Woda niegazowana");
+        menuItem3.setMenu(menu);
+        itemRepository.save(menuItem3);
+
+        //when
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/menu-items/search?name=woda"))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().is(200))
+                .andReturn();
+        //then
+        List<MenuItemDTO> itemsDTO = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
+                new TypeReference<List<MenuItemDTO>>() {});
+        List<MenuItem> items = itemMapper.toEntity(itemsDTO);
+
+        assertThat(items).isNotNull();
+        assertThat(items).hasSize(2);
+        assertThat(items.get(0).getName()).containsIgnoringCase("woda");
+        assertThat(items.get(1).getName()).containsIgnoringCase("woda");
     }
 
     @Test
