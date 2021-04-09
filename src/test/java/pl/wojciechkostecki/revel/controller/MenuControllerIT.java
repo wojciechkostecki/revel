@@ -166,9 +166,10 @@ class MenuControllerIT {
                 .andReturn();
 
         //then
-        List<MenuDTO> menusDTO = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<List<MenuDTO>>() {});
+        List<MenuDTO> menusDTO = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<List<MenuDTO>>() {
+        });
         List<Menu> menus = menuMapper.toEntity(menusDTO);
-        
+
         assertThat(menus).isNotNull();
         assertThat(menus).hasSize(2);
         assertThat(menus).contains(menu);

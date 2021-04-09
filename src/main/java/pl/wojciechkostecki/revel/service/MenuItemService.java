@@ -27,7 +27,7 @@ public class MenuItemService {
         this.menuMapper = menuMapper;
     }
 
-    public MenuItem save(MenuItemDTO menuItemDTO){
+    public MenuItem save(MenuItemDTO menuItemDTO) {
         MenuItem menuItem = itemMapper.toEntity(menuItemDTO);
         Menu menu = menuMapper.toEntity(menuService.findById(menuItemDTO.getMenuId())
                 .orElseThrow(() -> new EntityNotFoundException
@@ -41,7 +41,7 @@ public class MenuItemService {
         return menuItemRepository.findAll();
     }
 
-    public List<MenuItem> findByName(String name){
+    public List<MenuItem> findByName(String name) {
         return menuItemRepository.findByNameContainingIgnoreCase(name);
     }
 

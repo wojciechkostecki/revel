@@ -31,7 +31,7 @@ public class MenuService {
         Menu menu = menuMapper.toEntity(menuDTO);
         Local local = localService.findById(menuDTO.getLocalId())
                 .orElseThrow(() -> new EntityNotFoundException
-                        (String.format("Couldn't find a local with passed id: %d",menuDTO.getLocalId())));
+                        (String.format("Couldn't find a local with passed id: %d", menuDTO.getLocalId())));
         if (Objects.nonNull(local.getMenu())) {
             throw new BadRequestException("Menu is already assigned to local");
         }

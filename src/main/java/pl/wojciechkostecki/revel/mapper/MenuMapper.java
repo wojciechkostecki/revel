@@ -6,7 +6,7 @@ import pl.wojciechkostecki.revel.model.Menu;
 import pl.wojciechkostecki.revel.model.dto.MenuDTO;
 
 @Mapper(componentModel = "spring")
-public interface MenuMapper extends EntityMapper<MenuDTO, Menu>{
+public interface MenuMapper extends EntityMapper<MenuDTO, Menu> {
 
     @Mapping(source = "local.id", target = "localId")
     MenuDTO toDto(Menu menu);
