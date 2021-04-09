@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import pl.wojciechkostecki.revel.exception.BadRequestException;
+import pl.wojciechkostecki.revel.mapper.MenuMapper;
 import pl.wojciechkostecki.revel.model.Local;
 import pl.wojciechkostecki.revel.model.Menu;
 import pl.wojciechkostecki.revel.model.dto.MenuDTO;
@@ -43,6 +44,9 @@ class MenuControllerIT {
 
     @Autowired
     private MenuRepository menuRepository;
+
+    @Autowired
+    private MenuMapper menuMapper;
 
     @Test
     void createMenuTest() throws Exception {
@@ -162,8 +166,9 @@ class MenuControllerIT {
                 .andReturn();
 
         //then
-        List<Menu> menus = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<List<Menu>>() {});
-
+        List<MenuDTO> menusDTO = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<List<MenuDTO>>() {});
+        List<Menu> menus = menuMapper.toEntity(menusDTO);
+        
         assertThat(menus).isNotNull();
         assertThat(menus).hasSize(2);
         assertThat(menus).contains(menu);
