@@ -2,6 +2,7 @@ package pl.wojciechkostecki.revel.service;
 
 import org.springframework.stereotype.Service;
 import pl.wojciechkostecki.revel.mapper.MenuItemMapper;
+import pl.wojciechkostecki.revel.mapper.MenuMapper;
 import pl.wojciechkostecki.revel.model.Menu;
 import pl.wojciechkostecki.revel.model.MenuItem;
 import pl.wojciechkostecki.revel.model.dto.MenuItemDTO;
@@ -17,18 +18,20 @@ public class MenuItemService {
     private final MenuItemRepository menuItemRepository;
     private final MenuService menuService;
     private final MenuItemMapper itemMapper;
+    private final MenuMapper menuMapper;
 
-    public MenuItemService(MenuItemRepository menuItemRepository, MenuService menuService, MenuItemMapper itemMapper) {
+    public MenuItemService(MenuItemRepository menuItemRepository, MenuService menuService, MenuItemMapper itemMapper, MenuMapper menuMapper) {
         this.menuItemRepository = menuItemRepository;
         this.menuService = menuService;
         this.itemMapper = itemMapper;
+        this.menuMapper = menuMapper;
     }
 
-    public MenuItem save(MenuItemDTO menuItemDTO){
+    public MenuItem save(MenuItemDTO menuItemDTO) {
         MenuItem menuItem = itemMapper.toEntity(menuItemDTO);
-        Menu menu = menuService.findById(menuItemDTO.getMenuId())
+        Menu menu = menuMapper.toEntity(menuService.findById(menuItemDTO.getMenuId())
                 .orElseThrow(() -> new EntityNotFoundException
-                        (String.format("Couldn't find a menu with passed id: %d", menuItemDTO.getMenuId())));
+                        (String.format("Couldn't find a menu with passed id: %d", menuItemDTO.getMenuId()))));
         menuItem.setMenu(menu);
         menu.getMenuItems().add(menuItem);
         return menuItemRepository.save(menuItem);
@@ -38,7 +41,7 @@ public class MenuItemService {
         return menuItemRepository.findAll();
     }
 
-    public List<MenuItem> findByName(String name){
+    public List<MenuItem> findByName(String name) {
         return menuItemRepository.findByNameContainingIgnoreCase(name);
     }
 

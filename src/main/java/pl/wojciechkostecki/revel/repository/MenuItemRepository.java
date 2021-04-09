@@ -7,7 +7,7 @@ import pl.wojciechkostecki.revel.model.MenuItem;
 import java.util.List;
 
 @Repository
-public interface MenuItemRepository extends JpaRepository<MenuItem,Long> {
+public interface MenuItemRepository extends JpaRepository<MenuItem, Long> {
 
     List<MenuItem> findByNameContainingIgnoreCase(String name);
 }

@@ -7,7 +7,7 @@ import pl.wojciechkostecki.revel.model.Local;
 import java.util.List;
 
 @Repository
-public interface LocalRepository extends JpaRepository<Local,Long> {
+public interface LocalRepository extends JpaRepository<Local, Long> {
 
     List<Local> findByNameContainingIgnoreCase(String name);
 }

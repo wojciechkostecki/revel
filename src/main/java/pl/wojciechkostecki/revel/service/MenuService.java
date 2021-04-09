@@ -27,33 +27,34 @@ public class MenuService {
         this.menuMapper = menuMapper;
     }
 
-    public Menu save(MenuDTO menuDTO) {
+    public MenuDTO save(MenuDTO menuDTO) {
         Menu menu = menuMapper.toEntity(menuDTO);
         Local local = localService.findById(menuDTO.getLocalId())
                 .orElseThrow(() -> new EntityNotFoundException
-                        (String.format("Couldn't find a local with passed id: %d",menuDTO.getLocalId())));
+                        (String.format("Couldn't find a local with passed id: %d", menuDTO.getLocalId())));
         if (Objects.nonNull(local.getMenu())) {
             throw new BadRequestException("Menu is already assigned to local");
         }
         menu.setLocal(local);
         local.setMenu(menu);
-        return menuRepository.save(menu);
+        return menuMapper.toDto(menuRepository.save(menu));
     }
 
-    public List<Menu> getAll() {
-        return menuRepository.findAll();
+    public List<MenuDTO> getAll() {
+        return menuMapper.toDto(menuRepository.findAll());
     }
 
-    public Optional<Menu> findById(Long id) {
-        return menuRepository.findById(id);
+    public Optional<MenuDTO> findById(Long id) {
+        return menuRepository.findById(id)
+                .map(menuMapper::toDto);
     }
 
-    public Menu updateMenu(Long id, MenuDTO menuDTO) {
+    public MenuDTO updateMenu(Long id, MenuDTO menuDTO) {
         Menu menu = menuMapper.toEntity(menuDTO);
         Menu modifiedMenu = menuRepository.getOne(id);
         modifiedMenu.setName(menu.getName());
         modifiedMenu.setMenuItems(menu.getMenuItems());
-        return menuRepository.save(modifiedMenu);
+        return menuMapper.toDto(menuRepository.save(modifiedMenu));
     }
 
     public void delete(Long id) {
