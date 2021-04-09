@@ -1,5 +1,6 @@
 package pl.wojciechkostecki.revel.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import pl.wojciechkostecki.revel.mapper.MenuItemMapper;
-import pl.wojciechkostecki.revel.model.Local;
 import pl.wojciechkostecki.revel.model.Menu;
 import pl.wojciechkostecki.revel.model.MenuItem;
 import pl.wojciechkostecki.revel.model.dto.MenuItemDTO;
@@ -150,7 +150,38 @@ class MenuItemControllerIT {
     }
 
     @Test
-    void updateMenuItemTest() {
+    void updateMenuItemTest() throws Exception {
+        //given
+        Menu menu = new Menu();
+        menu.setName("Menu");
+        menuRepository.save(menu);
+
+        MenuItemDTO menuItem = new MenuItemDTO();
+        menuItem.setMenuId(menu.getId());
+        menuItem.setName("Herbata");
+
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/api/menu-items")
+                .content(objectMapper.writeValueAsString(menuItem))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andReturn();
+
+        MenuItemDTO originalItem = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), MenuItemDTO.class);
+        originalItem.setName("Kawa");
+
+        //when
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/menu-items/" + originalItem.getId())
+                .content(objectMapper.writeValueAsString(originalItem))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk());
+        //then
+        MenuItem changedItem = itemRepository.getOne(originalItem.getId());
+
+        assertThat(changedItem.getId()).isEqualTo(originalItem.getId());
+        assertThat(changedItem.getName()).isEqualTo("Kawa");
     }
 
     @Test
