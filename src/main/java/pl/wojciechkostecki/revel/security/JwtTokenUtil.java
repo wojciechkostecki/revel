@@ -3,6 +3,7 @@ package pl.wojciechkostecki.revel.security;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import pl.wojciechkostecki.revel.model.User;
 
@@ -17,7 +18,7 @@ public class JwtTokenUtil {
     private final String jwtSecret = "zdtlD3JK56m6wTTgsNFhqzjqP";
     private final String jwtIssuer = "example.io";
 
-    private final Logger logger;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public String generateAccessToken(User user) {
         return Jwts.builder()
