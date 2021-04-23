@@ -16,7 +16,7 @@ import static java.lang.String.format;
 @RequiredArgsConstructor
 public class JwtTokenUtil {
     private final String jwtSecret = "zdtlD3JK56m6wTTgsNFhqzjqP";
-    private final String jwtIssuer = "example.io";
+    private final String jwtIssuer = "wojciechkostecki.pl";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 

@@ -3,6 +3,7 @@ package pl.wojciechkostecki.revel.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 @Entity
 @Data
