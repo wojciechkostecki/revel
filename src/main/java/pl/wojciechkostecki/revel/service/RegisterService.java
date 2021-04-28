@@ -3,7 +3,6 @@ package pl.wojciechkostecki.revel.service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.wojciechkostecki.revel.mapper.UserMapper;
-import pl.wojciechkostecki.revel.model.User;
 import pl.wojciechkostecki.revel.model.dto.UserDTO;
 import pl.wojciechkostecki.revel.repository.UserRepository;
 
@@ -19,11 +18,11 @@ public class RegisterService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User registerUser(UserDTO userDTO) {
+    public void registerUser(UserDTO userDTO) {
         if (userRepository.findByUsername(userDTO.getUsername()).isPresent()) {
             throw new RuntimeException("There is a user with given login");
         }
         userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        return userRepository.save(userMapper.toEntity(userDTO));
+        userRepository.save(userMapper.toEntity(userDTO));
     }
 }
