@@ -3,7 +3,6 @@ package pl.wojciechkostecki.revel.model;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.Collection;
 
 @Entity
 @Data
@@ -13,7 +12,7 @@ public class User {
     @Column(name = "id")
     private Long id;
 
-    private String login;
+    private String username;
 
     private String password;
 }

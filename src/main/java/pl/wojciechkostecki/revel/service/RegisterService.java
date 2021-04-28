@@ -20,7 +20,7 @@ public class RegisterService {
     }
 
     public User registerUser(UserDTO userDTO) {
-        if (userRepository.findByLogin(userDTO.getLogin()).isPresent()) {
+        if (userRepository.findByUsername(userDTO.getUsername()).isPresent()) {
             throw new RuntimeException("There is a user with given login");
         }
         userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));

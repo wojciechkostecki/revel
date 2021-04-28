@@ -17,7 +17,7 @@ public class AppUserPrincipal extends User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getLogin();
+        return user.getUsername();
     }
 
     @Override
