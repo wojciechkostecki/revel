@@ -1,6 +1,5 @@
 package pl.wojciechkostecki.revel.controller;
 
-import org.hibernate.validator.constraints.SafeHtml;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
