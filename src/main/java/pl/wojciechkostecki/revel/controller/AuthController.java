@@ -7,12 +7,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.wojciechkostecki.revel.mapper.UserMapper;
-import pl.wojciechkostecki.revel.model.User;
 import pl.wojciechkostecki.revel.model.dto.UserDTO;
 import pl.wojciechkostecki.revel.security.JwtTokenUtil;
 import pl.wojciechkostecki.revel.service.RegisterService;
@@ -47,7 +47,7 @@ public class AuthController {
             Authentication authenticate = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 
-            User user = (User) authenticate.getPrincipal();
+            UserDetails user = (UserDetails) authenticate.getPrincipal();
 
             return ResponseEntity.ok()
                     .header(HttpHeaders.AUTHORIZATION, jwtTokenUtil.generateAccessToken(user))

@@ -1,11 +1,17 @@
 package pl.wojciechkostecki.revel.security;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pl.wojciechkostecki.revel.model.User;
 import pl.wojciechkostecki.revel.repository.UserRepository;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 import static java.lang.String.format;
 
@@ -22,6 +28,17 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(login)
                 .orElseThrow(() -> new UsernameNotFoundException(format("User %s not found",login)));
-        return new AppUserPrincipal(user);
+        return userToUserDetails(user);
+    }
+
+    private UserDetails userToUserDetails(User user) {
+        org.springframework.security.core.userdetails.User principal = new org.springframework.security.core.userdetails.User(
+                user.getUsername(), user.getPassword(), getUserAuthorities(user));
+
+        return principal;
+    }
+
+    private Collection<? extends GrantedAuthority> getUserAuthorities(User user) {
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
     }
 }

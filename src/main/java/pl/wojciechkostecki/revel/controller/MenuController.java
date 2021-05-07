@@ -31,7 +31,7 @@ public class MenuController {
         return new ResponseEntity<>(savedMenu, HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER')")
     @GetMapping
     public ResponseEntity<List<MenuDTO>> getAllMenus() {
         logger.debug("REST request to get all Menu");
