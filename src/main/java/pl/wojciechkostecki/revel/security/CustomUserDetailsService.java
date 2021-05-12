@@ -39,6 +39,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     private Collection<? extends GrantedAuthority> getUserAuthorities(User user) {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));//tłumaczenie ról usera na przywileje
     }
 }
+//po uruchomieniu apki powinnno dodać admina do bazy jeżeli nie istnieje
