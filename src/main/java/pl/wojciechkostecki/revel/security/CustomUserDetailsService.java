@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import pl.wojciechkostecki.revel.model.User;
 import pl.wojciechkostecki.revel.repository.UserRepository;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -32,14 +31,11 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     private UserDetails userToUserDetails(User user) {
-        org.springframework.security.core.userdetails.User principal = new org.springframework.security.core.userdetails.User(
+        return new org.springframework.security.core.userdetails.User(
                 user.getUsername(), user.getPassword(), getUserAuthorities(user));
-
-        return principal;
     }
 
     private Collection<? extends GrantedAuthority> getUserAuthorities(User user) {
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));//tłumaczenie ról usera na przywileje
     }
 }
-//po uruchomieniu apki powinnno dodać admina do bazy jeżeli nie istnieje
