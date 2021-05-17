@@ -8,4 +8,5 @@ import pl.wojciechkostecki.revel.model.UserRole;
 @Repository
 public interface UserRoleRepository extends JpaRepository<UserRole,Long> {
     UserRole findByName(Role name);
+    boolean existsByName(Role role);
 }

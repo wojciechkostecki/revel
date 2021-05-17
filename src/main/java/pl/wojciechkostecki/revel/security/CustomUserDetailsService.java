@@ -36,6 +36,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     private Collection<? extends GrantedAuthority> getUserAuthorities(User user) {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));//tłumaczenie ról usera na przywileje
+        return Collections.singletonList(new SimpleGrantedAuthority(user.getRoles().toString()));
     }
 }
