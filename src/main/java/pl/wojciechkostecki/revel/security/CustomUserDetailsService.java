@@ -8,9 +8,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pl.wojciechkostecki.revel.model.User;
 import pl.wojciechkostecki.revel.repository.UserRepository;
+import pl.wojciechkostecki.revel.repository.UserRoleRepository;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import static java.lang.String.format;
 
@@ -18,9 +21,11 @@ import static java.lang.String.format;
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final UserRoleRepository userRoleRepository;
 
-    public CustomUserDetailsService(UserRepository userRepository) {
+    public CustomUserDetailsService(UserRepository userRepository, UserRoleRepository userRoleRepository) {
         this.userRepository = userRepository;
+        this.userRoleRepository = userRoleRepository;
     }
 
     @Override
@@ -36,6 +41,12 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     private Collection<? extends GrantedAuthority> getUserAuthorities(User user) {
-        return Collections.singletonList(new SimpleGrantedAuthority(user.getRoles().toString()));
+        List<GrantedAuthority> authorities = new ArrayList<>();
+
+        user.getRoles().forEach(role -> {
+            authorities.add(new SimpleGrantedAuthority(role.getName().getValue()));
+        });
+
+        return authorities;
     }
 }
