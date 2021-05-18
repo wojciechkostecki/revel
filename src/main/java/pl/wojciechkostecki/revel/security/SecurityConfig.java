@@ -51,16 +51,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and();
 
         // Set unauthorized requests exception handler
-        http = http
-                .exceptionHandling()
-                .authenticationEntryPoint(
-                        (request, response, ex) -> {
-                            response.sendError(
-                                    HttpServletResponse.SC_UNAUTHORIZED,
-                                    ex.getMessage()
-                            );
-                        }
-                )
+        http = http.exceptionHandling()
+                .authenticationEntryPoint
+                        ((request, response, ex) -> {response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());})
                 .and();
 
         // Set permissions on endpoints
@@ -76,7 +69,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 jwtTokenFilter,
                 UsernamePasswordAuthenticationFilter.class
         );
+
+        http.logout()
+                .logoutUrl("api/logout")
+                .logoutSuccessUrl("/api/auth/login")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID");
     }
+
     // Used by spring security if CORS is enabled.
     @Bean
     public CorsFilter corsFilter() {

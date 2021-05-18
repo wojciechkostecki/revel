@@ -8,11 +8,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pl.wojciechkostecki.revel.model.User;
 import pl.wojciechkostecki.revel.repository.UserRepository;
-import pl.wojciechkostecki.revel.repository.UserRoleRepository;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import static java.lang.String.format;
@@ -21,11 +19,9 @@ import static java.lang.String.format;
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private final UserRoleRepository userRoleRepository;
 
-    public CustomUserDetailsService(UserRepository userRepository, UserRoleRepository userRoleRepository) {
+    public CustomUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.userRoleRepository = userRoleRepository;
     }
 
     @Override
