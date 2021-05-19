@@ -69,12 +69,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 jwtTokenFilter,
                 UsernamePasswordAuthenticationFilter.class
         );
-
-        http.logout()
-                .logoutUrl("api/logout")
-                .logoutSuccessUrl("/api/auth/login")
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID");
     }
 
     // Used by spring security if CORS is enabled.
