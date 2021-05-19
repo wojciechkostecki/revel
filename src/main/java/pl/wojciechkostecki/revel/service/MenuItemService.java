@@ -27,32 +27,32 @@ public class MenuItemService {
         this.menuMapper = menuMapper;
     }
 
-    public MenuItem save(MenuItemDTO menuItemDTO) {
+    public MenuItemDTO save(MenuItemDTO menuItemDTO) {
         MenuItem menuItem = itemMapper.toEntity(menuItemDTO);
         Menu menu = menuMapper.toEntity(menuService.findById(menuItemDTO.getMenuId())
                 .orElseThrow(() -> new EntityNotFoundException
                         (String.format("Couldn't find a menu with passed id: %d", menuItemDTO.getMenuId()))));
         menuItem.setMenu(menu);
         menu.getMenuItems().add(menuItem);
-        return menuItemRepository.save(menuItem);
+        return itemMapper.toDto(menuItemRepository.save(menuItem));
     }
 
-    public List<MenuItem> getAll() {
-        return menuItemRepository.findAll();
+    public List<MenuItemDTO> getAll() {
+        return itemMapper.toDto(menuItemRepository.findAll());
     }
 
-    public List<MenuItem> findByName(String name) {
-        return menuItemRepository.findByNameContainingIgnoreCase(name);
+    public List<MenuItemDTO> findByName(String name) {
+        return itemMapper.toDto(menuItemRepository.findByNameContainingIgnoreCase(name));
     }
 
-    public MenuItem updateMenuItem(Long id, MenuItemDTO menuItemDTO) {
+    public MenuItemDTO updateMenuItem(Long id, MenuItemDTO menuItemDTO) {
         MenuItem menuItem = itemMapper.toEntity(menuItemDTO);
         MenuItem modifiedMenuItem = menuItemRepository.getOne(id);
         modifiedMenuItem.setCategory(menuItem.getCategory());
         modifiedMenuItem.setName(menuItem.getName());
         modifiedMenuItem.setDescription(menuItem.getDescription());
         modifiedMenuItem.setPrice(menuItem.getPrice());
-        return menuItemRepository.save(modifiedMenuItem);
+        return itemMapper.toDto(menuItemRepository.save(modifiedMenuItem));
     }
 
     public void delete(Long id) {
