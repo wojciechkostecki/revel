@@ -35,8 +35,8 @@ public class AuthController {
         this.userMapper = userMapper;
     }
 
-    @PostMapping("/registration")
-    public ResponseEntity<Void> registrationUser(@Valid @RequestBody UserDTO userDTO) {
+    @PostMapping("/register")
+    public ResponseEntity<Void> registerUser(@Valid @RequestBody UserDTO userDTO) {
         registerService.registerUser(userDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

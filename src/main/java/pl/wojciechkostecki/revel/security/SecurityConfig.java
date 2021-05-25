@@ -1,6 +1,7 @@
 package pl.wojciechkostecki.revel.security;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -59,7 +60,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // Set permissions on endpoints
         http.authorizeRequests()
                 // Our public endpoints
-                .antMatchers("/api/auth/registration").permitAll()
+                .antMatchers("/api/auth/register").permitAll()
                 .antMatchers("/api/auth/login").permitAll()
                 // Our private endpoints
                 .anyRequest().authenticated();
