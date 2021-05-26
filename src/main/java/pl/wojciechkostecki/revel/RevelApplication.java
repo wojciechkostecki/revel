@@ -40,8 +40,8 @@ public class RevelApplication {
             User user = new User();
             user.setUsername("admin");
             user.setPassword(passwordEncoder.encode("admin"));
-            user.getRoles().add(userRoleRepository.findByName(Role.ADMIN));
-            user.getRoles().add(userRoleRepository.findByName(Role.USER));
+            user.getRoles().add(userRoleRepository.findByName(Role.ADMIN).get());
+            user.getRoles().add(userRoleRepository.findByName(Role.USER).get());
             userRepository.save(user);
         }
     }
