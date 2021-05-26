@@ -11,6 +11,8 @@ import java.util.Set;
 @Data
 public class UserDTO {
 
+    private Long id;
+
     @NotBlank(message = "Username is mandatory")
     @Size(min = 4, message = "Username requires a minimum of 4 characters")
     private String username;
