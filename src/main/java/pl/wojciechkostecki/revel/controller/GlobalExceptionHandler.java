@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import pl.wojciechkostecki.revel.exception.BadRequestException;
+import pl.wojciechkostecki.revel.exception.UserAlreadyExistException;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -36,6 +37,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             (BadCredentialsException exception, WebRequest request) {
         HttpHeaders headers = new HttpHeaders();
         HttpStatus status = HttpStatus.UNAUTHORIZED;
+        return handleExceptionInternal(exception, null, headers, status, request);
+    }
+
+    @ExceptionHandler(UserAlreadyExistException.class)
+    public final ResponseEntity<Object> handleUserAlreadyExistException
+            (UserAlreadyExistException exception, WebRequest request) {
+        HttpHeaders headers = new HttpHeaders();
+        HttpStatus status = HttpStatus.CONFLICT;
         return handleExceptionInternal(exception, null, headers, status, request);
     }
 }
