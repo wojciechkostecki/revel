@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.wojciechkostecki.revel.mapper.LocalMapper;
 import pl.wojciechkostecki.revel.model.Local;
@@ -25,6 +26,7 @@ public class LocalController {
         this.localMapper = localMapper;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Local> createLocal(@Valid @RequestBody LocalDTO localDTO) {
         logger.debug("REST request to create Local: {}", localDTO);
@@ -32,30 +34,35 @@ public class LocalController {
         return new ResponseEntity<>(savedLocal, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping
     public ResponseEntity<List<Local>> getAllLocals() {
         logger.debug("REST request to get all Locals");
         return ResponseEntity.ok(localService.getAll());
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/{id}")
     public ResponseEntity<Local> getLocal(@PathVariable Long id) {
         logger.debug("REST request to get Local: {}", id);
         return ResponseEntity.ok(localService.findById(id).get());
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/search")
     public ResponseEntity<List<Local>> getLocalsByName(@RequestParam String name) {
         logger.debug("REST request to get Locals with name containing {}", name);
         return ResponseEntity.ok(localService.findByName(name));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<LocalDTO> updateLocal(@PathVariable Long id, @Valid @RequestBody LocalDTO localDTO) {
         logger.debug("REST request to update Local: {} with id {}", localDTO, id);
         return ResponseEntity.ok(localMapper.toDto(localService.updateLocal(id, localDTO)));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLocal(@PathVariable Long id) {
         logger.debug("REST request to delete Local: {}", id);

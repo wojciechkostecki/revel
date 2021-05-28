@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.wojciechkostecki.revel.model.dto.MenuItemDTO;
 import pl.wojciechkostecki.revel.service.MenuItemService;
@@ -22,6 +23,7 @@ public class MenuItemController {
         this.menuItemService = menuItemService;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<MenuItemDTO> createMenuItem(@Valid @RequestBody MenuItemDTO menuItemDTO) {
         logger.debug("REST request to create Menu Item: {}", menuItemDTO);
@@ -29,24 +31,28 @@ public class MenuItemController {
         return new ResponseEntity<>(savedMenuItem, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<MenuItemDTO>> getAllMenuItems() {
         logger.debug("REST request to get all Menu Items");
         return ResponseEntity.ok(menuItemService.getAll());
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/search")
     public ResponseEntity<List<MenuItemDTO>> getMenuItemsByName(@RequestParam String name) {
         logger.debug("REST request to get Menu Items with name containing {}", name);
         return ResponseEntity.ok(menuItemService.findByName(name));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<MenuItemDTO> updateMenuItem(@PathVariable Long id, @Valid @RequestBody MenuItemDTO menuItemDTO) {
         logger.debug("REST request to update Menu Item: {} with id {}", menuItemDTO, id);
         return ResponseEntity.ok(menuItemService.updateMenuItem(id, menuItemDTO));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMenuItem(@PathVariable Long id) {
         logger.debug("REST request to delete Menu Item: {}", id);
